@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Fly1 SB.png",
+      "filename" : "Fly1x120C.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Fly1 SB 1.png",
+      "filename" : "Fly1x120C 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Fly1 SB 2.png",
+      "filename" : "Fly1x120C 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
