@@ -10,6 +10,12 @@ import GameplayKit
 
 class GameScene: SKScene {
     // Initialize the game elements
+    var rock1Texture: SKTexture!
+    var rock2Texture: SKTexture!
+    var rock3Texture: SKTexture!
+    var log1Texture: SKTexture!
+    var log2Texture: SKTexture!
+    var log3Texture: SKTexture!
     var frog: SKSpriteNode!
     var fly1Texture: SKTexture!
     var fly2Texture: SKTexture!
@@ -19,8 +25,12 @@ class GameScene: SKScene {
     var ant2Texture: SKTexture!
     var scoreLabel: SKLabelNode!
     var foodItems: [SKSpriteNode] = []
+    var obstacles: [SKSpriteNode] = []
     var score = 0
-    
+    var gameTime: TimeInterval = 60.0
+    var gameTimer: Timer?
+    var timerLabel: SKLabelNode!
+
     override func didMove(to view: SKView) {
         // Set up the game
         let background = SKSpriteNode(imageNamed: "jungle_floor")
@@ -31,13 +41,20 @@ class GameScene: SKScene {
         background.xScale = scaleFactor
         background.yScale = scaleFactor
         addChild(background)
-        
+
+        // Set up physics world
+        self.physicsWorld.gravity = .zero
+
         // Set up frog character
         frog = SKSpriteNode(imageNamed: "frog")
         frog.position = CGPoint(x: size.width / 2, y: size.height / 4)
         frog.zPosition = 1
         addChild(frog)
-        
+
+        // Set up frog physics body
+        frog.physicsBody = SKPhysicsBody(rectangleOf: frog.size)
+        frog.physicsBody?.isDynamic = false
+
         // Set up food item textures
         fly1Texture = SKTexture(imageNamed: "fly1")
         fly2Texture = SKTexture(imageNamed: "fly2")
@@ -45,20 +62,39 @@ class GameScene: SKScene {
         spider2Texture = SKTexture(imageNamed: "spider2")
         ant1Texture = SKTexture(imageNamed: "ant1")
         ant2Texture = SKTexture(imageNamed: "ant2")
-        
+
+        // Set up obstacle textures
+        rock1Texture = SKTexture(imageNamed: "rock1")
+        rock2Texture = SKTexture(imageNamed: "rock2")
+        rock3Texture = SKTexture(imageNamed: "rock3")
+        log1Texture = SKTexture(imageNamed: "log1")
+        log2Texture = SKTexture(imageNamed: "log2")
+        log3Texture = SKTexture(imageNamed: "log3")
+
         // Set up score label
         scoreLabel = SKLabelNode(fontNamed: "Arial")
         scoreLabel.text = "Score: \(score)"
         scoreLabel.fontSize = 28
         scoreLabel.fontColor = SKColor.black
-        scoreLabel.position = CGPoint(x: size.width / 2, y: size.height - 110)
+        scoreLabel.position = CGPoint(x: (size.width / 2) - 75, y: size.height - 110)
         addChild(scoreLabel)
+        
+        // Set up timer label
+        timerLabel = SKLabelNode(fontNamed: "Arial")
+        timerLabel.text = "Time: \(Int(gameTime))"
+        timerLabel.fontSize = 28
+        timerLabel.fontColor = SKColor.black
+        timerLabel.position = CGPoint(x: (size.width / 2 ) + 75, y: size.height - 110)
+        addChild(timerLabel)
         
         // Spawn 4 initial food items
         for _ in 0..<4 {
             spawnFood()
         }
-        
+        // Spawn 6 initial obstacles
+        for _ in 0..<6 {
+            spawnObstacle()
+        }
         // Set up timer to spawn new food items every 1.5 to 3 seconds
         let spawnAction = SKAction.run {
             self.spawnFood()
@@ -67,6 +103,27 @@ class GameScene: SKScene {
         let spawnSequence = SKAction.sequence([spawnAction, randomSpawnTime])
         let spawnRepeat = SKAction.repeatForever(spawnSequence)
         run(spawnRepeat)
+                
+        // Start game timer
+        startGameTimer()
+    }
+    
+    func startGameTimer() {
+        gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
+            guard let self = self else { return }
+            self.gameTime -= 1
+            self.timerLabel.text = "Time: \(Int(self.gameTime))"
+            
+            if self.gameTime <= 0 {
+                timer.invalidate()
+                self.gameOver()
+            }
+        }
+    }
+
+    func gameOver() {
+        // Handle game over logic here
+        // For example, you might present a game over scene or restart the current scene
     }
     
     func spawnFood() {
@@ -104,29 +161,87 @@ class GameScene: SKScene {
             foodItem.run(removalSequence)
         }
     }
+
+    func spawnObstacle() {
+    // Spawn a random obstacle at a random location
+        let obstacleTextures = [rock1Texture, rock2Texture, rock3Texture, log1Texture, log2Texture, log3Texture]
+        let randomIndex = Int.random(in: 0..<obstacleTextures.count)
+        let obstacleTexture = obstacleTextures[randomIndex]
+        let obstacle = SKSpriteNode(texture: obstacleTexture)
+        let randomX = CGFloat.random(in: 0..<size.width)
+        let randomY = CGFloat.random(in: 0..<size.height)
+
+        obstacle.position = CGPoint(x: randomX, y: randomY)
+        obstacle.zPosition = 1
+        addChild(obstacle)
+        obstacles.append(obstacle)
+
+        // Set up obstacle physics body
+        obstacle.physicsBody = SKPhysicsBody(rectangleOf: obstacle.size)
+        obstacle.physicsBody?.isDynamic = false
+        obstacle.physicsBody?.affectedByGravity = false
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         // Handle touch input
         guard let touch = touches.first else { return }
         let touchLocation = touch.location(in: self)
-        let moveAction = SKAction.move(to: touchLocation, duration: 0.3)
-        frog.run(moveAction)
-        
-        // Check for collisions with food items
-        for foodItem in foodItems {
-            if frog.frame.intersects(foodItem.frame) {
-                foodItem.removeFromParent()
-                switch foodItem.texture {
-                case fly1Texture, fly2Texture:
-                    score += 3
-                case spider1Texture, spider2Texture:
-                    score += 2
-                case ant1Texture, ant2Texture:
-                    score += 1
-                default:
-                    break
+
+        // Calculate the direction vector and normalize it
+        let direction = CGPoint(x: touchLocation.x - frog.position.x, y: touchLocation.y - frog.position.y)
+        let directionLength = sqrt(direction.x * direction.x + direction.y * direction.y)
+        let normalizedDirection = CGPoint(x: direction.x / directionLength, y: direction.y / directionLength)
+
+        // Set the hop distance and calculate the new position
+        let maxHopDistance: CGFloat = 80
+        var hopDistance: CGFloat = maxHopDistance
+
+        // Check for collisions with obstacles
+        for obstacle in obstacles {
+            let dx = obstacle.position.x - frog.position.x
+            let dy = obstacle.position.y - frog.position.y
+            let distanceToObstacle = sqrt(dx * dx + dy * dy)
+            let minDistance = (obstacle.size.width / 2) + (frog.size.width / 2) - 20
+
+            if distanceToObstacle < minDistance + maxHopDistance {
+                let dotProduct = dx * normalizedDirection.x + dy * normalizedDirection.y
+                if dotProduct > 0 {
+                    let allowedHopDistance = distanceToObstacle - minDistance
+                    hopDistance = min(hopDistance, allowedHopDistance)
                 }
-                scoreLabel.text = "Score: \(score)"
+            }
+        }
+
+        let newX = frog.position.x + normalizedDirection.x * hopDistance
+        let newY = frog.position.y + normalizedDirection.y * hopDistance
+        let newPosition = CGPoint(x: newX, y: newY)
+
+        // Move the frog to the new position with a hop animation
+        let moveAction = SKAction.move(to: newPosition, duration: 0.4)
+        let jumpUpAction = SKAction.moveBy(x: 0, y: 10, duration: 0.1)
+        let jumpSequence = SKAction.sequence([jumpUpAction, moveAction])
+        frog.run(jumpSequence) {
+            // Check for collisions with food items after the frog has moved
+            for foodItem in self.foodItems {
+                let dx = foodItem.position.x - self.frog.position.x
+                let dy = foodItem.position.y - self.frog.position.y
+                let distanceToFood = sqrt(dx * dx + dy * dy)
+                let minDistance = (foodItem.size.width / 2) + (self.frog.size.width / 2)
+
+                if distanceToFood < minDistance {
+                    foodItem.removeFromParent()
+                    switch foodItem.texture {
+                    case self.fly1Texture, self.fly2Texture:
+                        self.score += 3
+                    case self.spider1Texture, self.spider2Texture:
+                        self.score += 2
+                    case self.ant1Texture, self.ant2Texture:
+                        self.score += 1
+                    default:
+                        break
+                    }
+                    self.scoreLabel.text = "Score: \(self.score)"
+                }
             }
         }
     }
