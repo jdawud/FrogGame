@@ -27,10 +27,11 @@ class GameScene: SKScene {
     var foodItems: [SKSpriteNode] = []
     var obstacles: [SKSpriteNode] = []
     var score = 0
-    var gameTime: TimeInterval = 60.0
+    var gameTime: TimeInterval = 120.0
     var gameTimer: Timer?
     var timerLabel: SKLabelNode!
-
+    var isGameOver = false
+    
     override func didMove(to view: SKView) {
         // Set up the game
         let background = SKSpriteNode(imageNamed: "jungle_floor")
@@ -87,14 +88,16 @@ class GameScene: SKScene {
         timerLabel.position = CGPoint(x: (size.width / 2 ) + 75, y: size.height - 110)
         addChild(timerLabel)
         
-        // Spawn 4 initial food items
+        // Spawn initial food items
         for _ in 0..<4 {
             spawnFood()
         }
-        // Spawn 6 initial obstacles
-        for _ in 0..<6 {
+        
+        // Spawn initial obstacles
+        for _ in 0..<9 {
             spawnObstacle()
         }
+        
         // Set up timer to spawn new food items every 1.5 to 3 seconds
         let spawnAction = SKAction.run {
             self.spawnFood()
@@ -122,8 +125,35 @@ class GameScene: SKScene {
     }
 
     func gameOver() {
-        // Handle game over logic here
-        // For example, you might present a game over scene or restart the current scene
+        isGameOver = true
+        gameTimer?.invalidate()
+        
+        let resultText = score >= 200 ? "You Won!" : "Try Again!"
+        
+        // Create a yellow background for the text
+        let background = SKShapeNode(rectOf: CGSize(width: size.width / 2, height: 60), cornerRadius: 20)
+        background.fillColor = .yellow
+        background.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        addChild(background)
+
+        let resultLabel = SKLabelNode(fontNamed: "Arial")
+        resultLabel.text = resultText
+        resultLabel.fontSize = 36
+        resultLabel.fontColor = SKColor.red // Change font color to red
+        resultLabel.position = CGPoint(x: 0, y: -resultLabel.frame.size.height / 2)
+        background.addChild(resultLabel)
+        
+        if score < 200 {
+            resultLabel.name = "tryAgainLabel"
+        }
+        // Handle any other game over logic here, such as presenting a game over scene or restarting the current scene
+    }
+    
+    func restartGame() {
+        let newScene = GameScene(size: self.size)
+        newScene.scaleMode = self.scaleMode
+        let transition = SKTransition.fade(withDuration: 0.5)
+        self.view?.presentScene(newScene, transition: transition)
     }
     
     func spawnFood() {
@@ -183,65 +213,89 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // Handle touch input
-        guard let touch = touches.first else { return }
-        let touchLocation = touch.location(in: self)
+        if !isGameOver {
+            // Prevent the frog from moving and the score from increasing if the game is over
+            guard let touch = touches.first else { return }
+            let touchLocation = touch.location(in: self)
 
-        // Calculate the direction vector and normalize it
-        let direction = CGPoint(x: touchLocation.x - frog.position.x, y: touchLocation.y - frog.position.y)
-        let directionLength = sqrt(direction.x * direction.x + direction.y * direction.y)
-        let normalizedDirection = CGPoint(x: direction.x / directionLength, y: direction.y / directionLength)
+            // Calculate the direction vector and normalize it
+            let direction = CGPoint(x: touchLocation.x - frog.position.x, y: touchLocation.y - frog.position.y)
+            let directionLength = sqrt(direction.x * direction.x + direction.y * direction.y)
+            let normalizedDirection = CGPoint(x: direction.x / directionLength, y: direction.y / directionLength)
+            
+            // Mirror the frog image based on the direction of movement
+            if normalizedDirection.x > 0 {
+                frog.xScale = -abs(frog.xScale)
+            } else {
+                frog.xScale = abs(frog.xScale)
+            }
+            
+            // Set the hop distance and calculate the new position
+            let maxHopDistance: CGFloat = 80
+            var hopDistance: CGFloat = maxHopDistance
 
-        // Set the hop distance and calculate the new position
-        let maxHopDistance: CGFloat = 80
-        var hopDistance: CGFloat = maxHopDistance
+            // Check for collisions with obstacles
+            for obstacle in obstacles {
+                let dx = obstacle.position.x - frog.position.x
+                let dy = obstacle.position.y - frog.position.y
+                let distanceToObstacle = sqrt(dx * dx + dy * dy)
+                let minDistance = (obstacle.size.width / 2) + (frog.size.width / 2) - 20
 
-        // Check for collisions with obstacles
-        for obstacle in obstacles {
-            let dx = obstacle.position.x - frog.position.x
-            let dy = obstacle.position.y - frog.position.y
-            let distanceToObstacle = sqrt(dx * dx + dy * dy)
-            let minDistance = (obstacle.size.width / 2) + (frog.size.width / 2) - 20
+                if distanceToObstacle < minDistance + maxHopDistance {
+                    let dotProduct = dx * normalizedDirection.x + dy * normalizedDirection.y
+                    if dotProduct > 0 {
+                        let allowedHopDistance = distanceToObstacle - minDistance
+                        hopDistance = min(hopDistance, allowedHopDistance)
+                    }
+                }
+            }
 
-            if distanceToObstacle < minDistance + maxHopDistance {
-                let dotProduct = dx * normalizedDirection.x + dy * normalizedDirection.y
-                if dotProduct > 0 {
-                    let allowedHopDistance = distanceToObstacle - minDistance
-                    hopDistance = min(hopDistance, allowedHopDistance)
+            let newX = frog.position.x + normalizedDirection.x * hopDistance
+            let newY = frog.position.y + normalizedDirection.y * hopDistance
+            let newPosition = CGPoint(x: newX, y: newY)
+
+            // Move the frog to the new position with a hop animation
+            let moveAction = SKAction.move(to: newPosition, duration: 0.4)
+            let jumpUpAction = SKAction.moveBy(x: 0, y: 10, duration: 0.1)
+            let jumpDownAction = SKAction.moveBy(x: 0, y: -10, duration: 0.1)
+            let checkCollisionAction = SKAction.run {
+                self.checkForCollisionsWithFoodItems()
+            }
+            let jumpSequence = SKAction.sequence([jumpUpAction, moveAction, jumpDownAction, checkCollisionAction])
+            frog.run(jumpSequence)
+        } else {
+            guard let touch = touches.first else { return }
+            let touchLocation = touch.location(in: self)
+            let touchedNodes = nodes(at: touchLocation)
+            for node in touchedNodes {
+                if node.name == "tryAgainLabel" {
+                    restartGame()
                 }
             }
         }
+    }
 
-        let newX = frog.position.x + normalizedDirection.x * hopDistance
-        let newY = frog.position.y + normalizedDirection.y * hopDistance
-        let newPosition = CGPoint(x: newX, y: newY)
-
-        // Move the frog to the new position with a hop animation
-        let moveAction = SKAction.move(to: newPosition, duration: 0.4)
-        let jumpUpAction = SKAction.moveBy(x: 0, y: 10, duration: 0.1)
-        let jumpSequence = SKAction.sequence([jumpUpAction, moveAction])
-        frog.run(jumpSequence) {
-            // Check for collisions with food items after the frog has moved
-            for foodItem in self.foodItems {
-                let dx = foodItem.position.x - self.frog.position.x
-                let dy = foodItem.position.y - self.frog.position.y
-                let distanceToFood = sqrt(dx * dx + dy * dy)
-                let minDistance = (foodItem.size.width / 2) + (self.frog.size.width / 2)
-
-                if distanceToFood < minDistance {
-                    foodItem.removeFromParent()
-                    switch foodItem.texture {
-                    case self.fly1Texture, self.fly2Texture:
-                        self.score += 3
-                    case self.spider1Texture, self.spider2Texture:
-                        self.score += 2
-                    case self.ant1Texture, self.ant2Texture:
-                        self.score += 1
-                    default:
-                        break
-                    }
-                    self.scoreLabel.text = "Score: \(self.score)"
+    func checkForCollisionsWithFoodItems() {
+        
+        // Prevent the score from increasing if the game is over
+        guard !isGameOver else { return }
+        for foodItem in self.foodItems {
+            let dx = foodItem.position.x - self.frog.position.x
+            let dy = foodItem.position.y - self.frog.position.y
+            let distanceToFood = sqrt(dx * dx + dy * dy)
+            let minDistance = (foodItem.size.width / 2) + (self.frog.size.width / 2)
+            // Update score
+            if distanceToFood < minDistance {
+                foodItem.removeFromParent()
+                switch foodItem.texture {
+                case self.fly1Texture, self.fly2Texture:
+                    self.score += 2
+                case self.spider1Texture, self.spider2Texture, self.ant1Texture, self.ant2Texture:
+                    self.score += 1
+                default:
+                    break
                 }
+                self.scoreLabel.text = "Score: \(self.score)"
             }
         }
     }
