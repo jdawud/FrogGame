@@ -27,14 +27,28 @@ class GameScene: SKScene {
     var foodItems: [SKSpriteNode] = []
     var obstacles: [SKSpriteNode] = []
     var score = 0
+    var level: Int = 1
+    var totalLevels: Int = 3
     var gameTime: TimeInterval = 120.0
     var gameTimer: Timer?
     var timerLabel: SKLabelNode!
     var isGameOver = false
     
     override func didMove(to view: SKView) {
+        loadLevel()
+    }
+    
+    func loadLevel() {
+        // Remove all existing nodes to reset the level
+        removeAllChildren()
+        foodItems.removeAll()
+        removeAllActions()
+
+        // Set up the game based on the current level
+        let backgroundName = "jungle_floor\(level)"
+        let background = SKSpriteNode(imageNamed: backgroundName)
+        
         // Set up the game
-        let background = SKSpriteNode(imageNamed: "jungle_floor")
         background.anchorPoint = CGPoint(x: 0, y: 0)
         background.position = CGPoint(x: 0, y: 0)
         background.zPosition = -1
@@ -73,19 +87,21 @@ class GameScene: SKScene {
         log3Texture = SKTexture(imageNamed: "log3")
 
         // Set up score label
-        scoreLabel = SKLabelNode(fontNamed: "Arial")
+        scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
         scoreLabel.text = "Score: \(score)"
         scoreLabel.fontSize = 28
-        scoreLabel.fontColor = SKColor.black
-        scoreLabel.position = CGPoint(x: (size.width / 2) - 75, y: size.height - 110)
+        scoreLabel.fontColor = SKColor.red
+        scoreLabel.position = CGPoint(x: (size.width / 2) - 90, y: size.height - 110)
+        scoreLabel.zPosition = 2
         addChild(scoreLabel)
-        
+
         // Set up timer label
-        timerLabel = SKLabelNode(fontNamed: "Arial")
+        timerLabel = SKLabelNode(fontNamed: "Chalkduster")
         timerLabel.text = "Time: \(Int(gameTime))"
         timerLabel.fontSize = 28
-        timerLabel.fontColor = SKColor.black
-        timerLabel.position = CGPoint(x: (size.width / 2 ) + 75, y: size.height - 110)
+        timerLabel.fontColor = SKColor.red
+        timerLabel.position = CGPoint(x: (size.width / 2 ) + 90, y: size.height - 110)
+        timerLabel.zPosition = 2
         addChild(timerLabel)
         
         // Spawn initial food items
@@ -94,7 +110,7 @@ class GameScene: SKScene {
         }
         
         // Spawn initial obstacles
-        for _ in 0..<9 {
+        for _ in 0..<10 {
             spawnObstacle()
         }
         
@@ -127,33 +143,39 @@ class GameScene: SKScene {
     func gameOver() {
         isGameOver = true
         gameTimer?.invalidate()
-        
-        let resultText = score >= 200 ? "You Won!" : "Try Again!"
-        
+        let resultText = score >= 100 ? "Frog Won!" : "Try Again!"
+        let nodeName = score >= 100 ? "nextLevelLabel" : "tryAgainLabel"
         // Create a yellow background for the text
         let background = SKShapeNode(rectOf: CGSize(width: size.width / 2, height: 60), cornerRadius: 20)
         background.fillColor = .yellow
         background.position = CGPoint(x: size.width / 2, y: size.height / 2)
         addChild(background)
 
-        let resultLabel = SKLabelNode(fontNamed: "Arial")
+        let resultLabel = SKLabelNode(fontNamed: "Chalkduster")
         resultLabel.text = resultText
-        resultLabel.fontSize = 36
-        resultLabel.fontColor = SKColor.red // Change font color to red
-        resultLabel.position = CGPoint(x: 0, y: -resultLabel.frame.size.height / 2)
+        resultLabel.fontSize = 32
+        resultLabel.fontColor = SKColor.red
+        resultLabel.position = CGPoint(x: 0, y: -resultLabel.frame.size.height / 2 + 14)
         background.addChild(resultLabel)
-        
-        if score < 200 {
-            resultLabel.name = "tryAgainLabel"
-        }
-        // Handle any other game over logic here, such as presenting a game over scene or restarting the current scene
+        resultLabel.name = nodeName
     }
     
-    func restartGame() {
-        let newScene = GameScene(size: self.size)
-        newScene.scaleMode = self.scaleMode
-        let transition = SKTransition.fade(withDuration: 0.5)
-        self.view?.presentScene(newScene, transition: transition)
+    func restartGame(restartLevel: Int) {
+        isGameOver = false
+        score = 0
+        gameTime = 120.0
+        level = restartLevel
+        
+        // Invalidate existing timer before starting a new one
+        gameTimer?.invalidate()
+        
+        // Remove "You Won!" or "Try Again!" labels
+        for child in children {
+            if child.name == "nextLevelLabel" || child.name == "tryAgainLabel" {
+                child.removeFromParent()
+            }
+        }
+        loadLevel()
     }
     
     func spawnFood() {
@@ -214,7 +236,6 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !isGameOver {
-            // Prevent the frog from moving and the score from increasing if the game is over
             guard let touch = touches.first else { return }
             let touchLocation = touch.location(in: self)
 
@@ -222,30 +243,32 @@ class GameScene: SKScene {
             let direction = CGPoint(x: touchLocation.x - frog.position.x, y: touchLocation.y - frog.position.y)
             let directionLength = sqrt(direction.x * direction.x + direction.y * direction.y)
             let normalizedDirection = CGPoint(x: direction.x / directionLength, y: direction.y / directionLength)
-            
+
             // Mirror the frog image based on the direction of movement
             if normalizedDirection.x > 0 {
                 frog.xScale = -abs(frog.xScale)
             } else {
                 frog.xScale = abs(frog.xScale)
             }
-            
+
             // Set the hop distance and calculate the new position
             let maxHopDistance: CGFloat = 80
             var hopDistance: CGFloat = maxHopDistance
 
-            // Check for collisions with obstacles
-            for obstacle in obstacles {
-                let dx = obstacle.position.x - frog.position.x
-                let dy = obstacle.position.y - frog.position.y
-                let distanceToObstacle = sqrt(dx * dx + dy * dy)
-                let minDistance = (obstacle.size.width / 2) + (frog.size.width / 2) - 20
+            // Use raycasting to detect obstacles in the path
+            let rayEnd = CGPoint(x: frog.position.x + maxHopDistance * normalizedDirection.x, y: frog.position.y + maxHopDistance * normalizedDirection.y)
 
-                if distanceToObstacle < minDistance + maxHopDistance {
-                    let dotProduct = dx * normalizedDirection.x + dy * normalizedDirection.y
-                    if dotProduct > 0 {
+            physicsWorld.enumerateBodies(alongRayStart: frog.position, end: rayEnd) { (body, point, normal, stop) in
+                if let obstacleNode = body.node {
+                    let dx = obstacleNode.position.x - self.frog.position.x
+                    let dy = obstacleNode.position.y - self.frog.position.y
+                    let distanceToObstacle = sqrt(dx * dx + dy * dy)
+                    let minDistance = (obstacleNode.frame.size.width / 2) + (self.frog.frame.size.width / 2) - 20
+
+                    if distanceToObstacle < minDistance + maxHopDistance {
                         let allowedHopDistance = distanceToObstacle - minDistance
                         hopDistance = min(hopDistance, allowedHopDistance)
+                        stop.pointee = true
                     }
                 }
             }
@@ -269,7 +292,10 @@ class GameScene: SKScene {
             let touchedNodes = nodes(at: touchLocation)
             for node in touchedNodes {
                 if node.name == "tryAgainLabel" {
-                    restartGame()
+                    restartGame(restartLevel: level) // Keep the current level if "Try Again!" is pressed
+                } else if node.name == "nextLevelLabel" {
+                    let nextLevel = (level % totalLevels) + 1
+                    restartGame(restartLevel: nextLevel) // Switch to the next level if "You Won!" is pressed
                 }
             }
         }
