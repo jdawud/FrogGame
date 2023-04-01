@@ -28,7 +28,7 @@ class GameScene: SKScene {
     var obstacles: [SKSpriteNode] = []
     var score = 0
     var level: Int = 1
-    var totalLevels: Int = 6
+    var totalLevels: Int = 10
     var gameTime: TimeInterval = 120.0
     var gameTimer: Timer?
     var timerLabel: SKLabelNode!
@@ -91,7 +91,7 @@ class GameScene: SKScene {
         scoreLabel.text = "Score: \(score)"
         scoreLabel.fontSize = 28
         scoreLabel.fontColor = SKColor.red
-        scoreLabel.position = CGPoint(x: (size.width / 2) - 90, y: size.height - 110)
+        scoreLabel.position = CGPoint(x: (size.width / 2) - 200, y: size.height - 110)
         scoreLabel.zPosition = 2
         addChild(scoreLabel)
 
@@ -100,9 +100,18 @@ class GameScene: SKScene {
         timerLabel.text = "Time: \(Int(gameTime))"
         timerLabel.fontSize = 28
         timerLabel.fontColor = SKColor.red
-        timerLabel.position = CGPoint(x: (size.width / 2 ) + 90, y: size.height - 110)
+        timerLabel.position = CGPoint(x: (size.width / 2 ) + 200, y: size.height - 110)
         timerLabel.zPosition = 2
         addChild(timerLabel)
+        
+        // Set up level label
+        let levelLabel = SKLabelNode(fontNamed: "Chalkduster")
+        levelLabel.text = "Level: \(level)"
+        levelLabel.fontSize = 36
+        levelLabel.fontColor = SKColor.red
+        levelLabel.position = CGPoint(x: size.width / 2, y: size.height - 110)
+        levelLabel.zPosition = 2
+        addChild(levelLabel)
         
         // Spawn initial food items
         for _ in 0..<4 {

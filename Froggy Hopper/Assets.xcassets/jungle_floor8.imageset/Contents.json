@@ -1,14 +1,17 @@
 {
   "images" : [
     {
+      "filename" : "jungle8_554x962.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "jungle8_554x962 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "jungle8_554x962 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
