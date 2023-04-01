@@ -28,7 +28,7 @@ class GameScene: SKScene {
     var obstacles: [SKSpriteNode] = []
     var score = 0
     var level: Int = 1
-    var totalLevels: Int = 3
+    var totalLevels: Int = 6
     var gameTime: TimeInterval = 120.0
     var gameTimer: Timer?
     var timerLabel: SKLabelNode!
