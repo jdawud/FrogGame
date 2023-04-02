@@ -158,6 +158,7 @@ class GameScene: SKScene {
         let background = SKShapeNode(rectOf: CGSize(width: size.width / 2, height: 60), cornerRadius: 20)
         background.fillColor = .yellow
         background.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        background.zPosition = 10
         addChild(background)
 
         let resultLabel = SKLabelNode(fontNamed: "Chalkduster")
@@ -165,6 +166,7 @@ class GameScene: SKScene {
         resultLabel.fontSize = 32
         resultLabel.fontColor = SKColor.red
         resultLabel.position = CGPoint(x: 0, y: -resultLabel.frame.size.height / 2 + 14)
+        resultLabel.zPosition = 10
         background.addChild(resultLabel)
         resultLabel.name = nodeName
     }
