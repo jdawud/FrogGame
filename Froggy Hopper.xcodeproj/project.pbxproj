@@ -15,6 +15,17 @@
 		636008B429C60C2C00B83E75 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 636008B229C60C2C00B83E75 /* Main.storyboard */; };
 		636008B629C60C3000B83E75 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 636008B529C60C3000B83E75 /* Assets.xcassets */; };
 		636008B929C60C3000B83E75 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 636008B729C60C3000B83E75 /* LaunchScreen.storyboard */; };
+		6365BD922A36A2D00049C64F /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6365BD912A36A2D00049C64F /* SoundManager.swift */; };
+		6365BD952A36AD470049C64F /* BackgroundMusic2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6365BD932A36AD460049C64F /* BackgroundMusic2.mp3 */; };
+		6365BD962A36AD470049C64F /* BackgroundMusic1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6365BD942A36AD470049C64F /* BackgroundMusic1.mp3 */; };
+		6365BD9C2A36C0010049C64F /* BackgroundMusic5.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6365BD972A36BFFC0049C64F /* BackgroundMusic5.mp3 */; };
+		6365BD9D2A36C0010049C64F /* BackgroundMusic3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6365BD982A36BFFD0049C64F /* BackgroundMusic3.mp3 */; };
+		6365BD9E2A36C0010049C64F /* BackgroundMusic4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6365BD992A36BFFE0049C64F /* BackgroundMusic4.mp3 */; };
+		6365BD9F2A36C0010049C64F /* BackgroundMusic7.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6365BD9A2A36BFFF0049C64F /* BackgroundMusic7.mp3 */; };
+		6365BDA02A36C0010049C64F /* BackgroundMusic6.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6365BD9B2A36C0010049C64F /* BackgroundMusic6.mp3 */; };
+		6365BDA42A36C0160049C64F /* BackgroundMusic10.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6365BDA12A36C0120049C64F /* BackgroundMusic10.mp3 */; };
+		6365BDA52A36C0160049C64F /* BackgroundMusic8.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6365BDA22A36C0140049C64F /* BackgroundMusic8.mp3 */; };
+		6365BDA62A36C0160049C64F /* BackgroundMusic9.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6365BDA32A36C0160049C64F /* BackgroundMusic9.mp3 */; };
 		63B2AAAD29C7A73400B58549 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B2AAAC29C7A73400B58549 /* SceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +39,17 @@
 		636008B329C60C2C00B83E75 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		636008B529C60C3000B83E75 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		636008B829C60C3000B83E75 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		6365BD912A36A2D00049C64F /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
+		6365BD932A36AD460049C64F /* BackgroundMusic2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BackgroundMusic2.mp3; sourceTree = "<group>"; };
+		6365BD942A36AD470049C64F /* BackgroundMusic1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BackgroundMusic1.mp3; sourceTree = "<group>"; };
+		6365BD972A36BFFC0049C64F /* BackgroundMusic5.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BackgroundMusic5.mp3; sourceTree = "<group>"; };
+		6365BD982A36BFFD0049C64F /* BackgroundMusic3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BackgroundMusic3.mp3; sourceTree = "<group>"; };
+		6365BD992A36BFFE0049C64F /* BackgroundMusic4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BackgroundMusic4.mp3; sourceTree = "<group>"; };
+		6365BD9A2A36BFFF0049C64F /* BackgroundMusic7.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BackgroundMusic7.mp3; sourceTree = "<group>"; };
+		6365BD9B2A36C0010049C64F /* BackgroundMusic6.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BackgroundMusic6.mp3; sourceTree = "<group>"; };
+		6365BDA12A36C0120049C64F /* BackgroundMusic10.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BackgroundMusic10.mp3; sourceTree = "<group>"; };
+		6365BDA22A36C0140049C64F /* BackgroundMusic8.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BackgroundMusic8.mp3; sourceTree = "<group>"; };
+		6365BDA32A36C0160049C64F /* BackgroundMusic9.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BackgroundMusic9.mp3; sourceTree = "<group>"; };
 		63B2AAAC29C7A73400B58549 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		63EF8BDA29C7046900E67856 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -62,15 +84,26 @@
 		636008A729C60C2C00B83E75 /* Froggy Hopper */ = {
 			isa = PBXGroup;
 			children = (
-				636008A829C60C2C00B83E75 /* AppDelegate.swift */,
-				63B2AAAC29C7A73400B58549 /* SceneDelegate.swift */,
 				636008AA29C60C2C00B83E75 /* GameScene.sks */,
 				636008AC29C60C2C00B83E75 /* Actions.sks */,
+				636008A829C60C2C00B83E75 /* AppDelegate.swift */,
+				63B2AAAC29C7A73400B58549 /* SceneDelegate.swift */,
 				636008AE29C60C2C00B83E75 /* GameScene.swift */,
 				636008B029C60C2C00B83E75 /* GameViewController.swift */,
+				6365BD912A36A2D00049C64F /* SoundManager.swift */,
+				6365BD942A36AD470049C64F /* BackgroundMusic1.mp3 */,
+				6365BD932A36AD460049C64F /* BackgroundMusic2.mp3 */,
+				6365BD982A36BFFD0049C64F /* BackgroundMusic3.mp3 */,
+				6365BD992A36BFFE0049C64F /* BackgroundMusic4.mp3 */,
+				6365BD972A36BFFC0049C64F /* BackgroundMusic5.mp3 */,
+				6365BD9B2A36C0010049C64F /* BackgroundMusic6.mp3 */,
+				6365BD9A2A36BFFF0049C64F /* BackgroundMusic7.mp3 */,
+				6365BDA22A36C0140049C64F /* BackgroundMusic8.mp3 */,
+				6365BDA32A36C0160049C64F /* BackgroundMusic9.mp3 */,
+				6365BDA12A36C0120049C64F /* BackgroundMusic10.mp3 */,
 				636008B229C60C2C00B83E75 /* Main.storyboard */,
-				636008B529C60C3000B83E75 /* Assets.xcassets */,
 				636008B729C60C3000B83E75 /* LaunchScreen.storyboard */,
+				636008B529C60C3000B83E75 /* Assets.xcassets */,
 				63EF8BDA29C7046900E67856 /* Info.plist */,
 			);
 			path = "Froggy Hopper";
@@ -134,10 +167,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6365BD9C2A36C0010049C64F /* BackgroundMusic5.mp3 in Resources */,
+				6365BDA52A36C0160049C64F /* BackgroundMusic8.mp3 in Resources */,
+				6365BDA02A36C0010049C64F /* BackgroundMusic6.mp3 in Resources */,
 				636008B429C60C2C00B83E75 /* Main.storyboard in Resources */,
+				6365BD962A36AD470049C64F /* BackgroundMusic1.mp3 in Resources */,
+				6365BD9E2A36C0010049C64F /* BackgroundMusic4.mp3 in Resources */,
+				6365BD952A36AD470049C64F /* BackgroundMusic2.mp3 in Resources */,
 				636008AB29C60C2C00B83E75 /* GameScene.sks in Resources */,
+				6365BDA42A36C0160049C64F /* BackgroundMusic10.mp3 in Resources */,
 				636008B629C60C3000B83E75 /* Assets.xcassets in Resources */,
+				6365BD9F2A36C0010049C64F /* BackgroundMusic7.mp3 in Resources */,
 				636008B929C60C3000B83E75 /* LaunchScreen.storyboard in Resources */,
+				6365BD9D2A36C0010049C64F /* BackgroundMusic3.mp3 in Resources */,
+				6365BDA62A36C0160049C64F /* BackgroundMusic9.mp3 in Resources */,
 				636008AD29C60C2C00B83E75 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -153,6 +196,7 @@
 				636008B129C60C2C00B83E75 /* GameViewController.swift in Sources */,
 				636008A929C60C2C00B83E75 /* AppDelegate.swift in Sources */,
 				63B2AAAD29C7A73400B58549 /* SceneDelegate.swift in Sources */,
+				6365BD922A36A2D00049C64F /* SoundManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,7 +364,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "SHPSHL-WRX.iFrog";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -358,7 +402,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "SHPSHL-WRX.iFrog";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

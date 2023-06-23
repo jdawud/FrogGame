@@ -33,12 +33,22 @@ class GameScene: SKScene {
     var gameTimer: Timer?
     var timerLabel: SKLabelNode!
     var isGameOver = false
-    
+    var backgroundMusicFiles: [String] = ["BackgroundMusic1.mp3", "BackgroundMusic2.mp3", "BackgroundMusic3.mp3", "BackgroundMusic4.mp3", "BackgroundMusic5.mp3", "BackgroundMusic6.mp3", "BackgroundMusic7.mp3", "BackgroundMusic8.mp3", "BackgroundMusic9.mp3", "BackgroundMusic10.mp3"]
+
     override func didMove(to view: SKView) {
         loadLevel()
     }
     
     func loadLevel() {
+        
+        // Stop the previous background music before starting a new one
+        SoundManager.shared.stopBackgroundMusic()
+        
+        // If there's a background music file corresponding to the current level, play it
+        if level <= backgroundMusicFiles.count {
+            SoundManager.shared.playBackgroundMusic(filename: backgroundMusicFiles[level - 1])
+        }
+        
         // Remove all existing nodes to reset the level
         removeAllChildren()
         foodItems.removeAll()
@@ -150,6 +160,7 @@ class GameScene: SKScene {
     }
 
     func gameOver() {
+        SoundManager.shared.stopBackgroundMusic()
         isGameOver = true
         gameTimer?.invalidate()
         let resultText = score >= 100 ? "Frog Won!" : "Try Again!"
@@ -321,6 +332,7 @@ class GameScene: SKScene {
             let dy = foodItem.position.y - self.frog.position.y
             let distanceToFood = sqrt(dx * dx + dy * dy)
             let minDistance = (foodItem.size.width / 2) + (self.frog.size.width / 2)
+            
             // Update score
             if distanceToFood < minDistance {
                 foodItem.removeFromParent()
