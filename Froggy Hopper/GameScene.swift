@@ -38,17 +38,17 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         loadLevel()
     }
-    
+
     func loadLevel() {
-        
+
         // Stop the previous background music before starting a new one
         SoundManager.shared.stopBackgroundMusic()
-        
+
         // If there's a background music file corresponding to the current level, play it
         if level <= backgroundMusicFiles.count {
             SoundManager.shared.playBackgroundMusic(filename: backgroundMusicFiles[level - 1])
         }
-        
+
         // Remove all existing nodes to reset the level
         removeAllChildren()
         foodItems.removeAll()
@@ -57,7 +57,7 @@ class GameScene: SKScene {
         // Set up the game based on the current level
         let backgroundName = "jungle_floor\(level)"
         let background = SKSpriteNode(imageNamed: backgroundName)
-        
+
         // Set up the game
         background.anchorPoint = CGPoint(x: 0, y: 0)
         background.position = CGPoint(x: 0, y: 0)
@@ -113,7 +113,7 @@ class GameScene: SKScene {
         timerLabel.position = CGPoint(x: (size.width / 2 ) + 200, y: size.height - 110)
         timerLabel.zPosition = 2
         addChild(timerLabel)
-        
+
         // Set up level label
         let levelLabel = SKLabelNode(fontNamed: "Chalkduster")
         levelLabel.text = "Level: \(level)"
@@ -122,17 +122,17 @@ class GameScene: SKScene {
         levelLabel.position = CGPoint(x: size.width / 2, y: size.height - 110)
         levelLabel.zPosition = 2
         addChild(levelLabel)
-        
+
         // Spawn initial food items
         for _ in 0..<4 {
             spawnFood()
         }
-        
+
         // Spawn initial obstacles
         for _ in 0..<10 {
             spawnObstacle()
         }
-        
+
         // Set up timer to spawn new food items every 1.5 to 3 seconds
         let spawnAction = SKAction.run {
             self.spawnFood()
@@ -141,17 +141,17 @@ class GameScene: SKScene {
         let spawnSequence = SKAction.sequence([spawnAction, randomSpawnTime])
         let spawnRepeat = SKAction.repeatForever(spawnSequence)
         run(spawnRepeat)
-                
+
         // Start game timer
         startGameTimer()
     }
-    
+
     func startGameTimer() {
         gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
             guard let self = self else { return }
             self.gameTime -= 1
             self.timerLabel.text = "Time: \(Int(self.gameTime))"
-            
+
             if self.gameTime <= 0 {
                 timer.invalidate()
                 self.gameOver()
@@ -181,16 +181,16 @@ class GameScene: SKScene {
         background.addChild(resultLabel)
         resultLabel.name = nodeName
     }
-    
+
     func restartGame(restartLevel: Int) {
         isGameOver = false
         score = 0
         gameTime = 120.0
         level = restartLevel
-        
+
         // Invalidate existing timer before starting a new one
         gameTimer?.invalidate()
-        
+
         // Remove "You Won!" or "Try Again!" labels
         for child in children {
             if child.name == "nextLevelLabel" || child.name == "tryAgainLabel" {
@@ -199,7 +199,7 @@ class GameScene: SKScene {
         }
         loadLevel()
     }
-    
+
     func spawnFood() {
         // Spawn a random food item at a random location
         let foodTextures = [fly1Texture, fly2Texture, spider1Texture, spider2Texture, ant1Texture, ant2Texture]
@@ -237,7 +237,7 @@ class GameScene: SKScene {
     }
 
     func spawnObstacle() {
-    // Spawn a random obstacle at a random location
+        // Spawn a random obstacle at a random location
         let obstacleTextures = [rock1Texture, rock2Texture, rock3Texture, log1Texture, log2Texture, log3Texture]
         let randomIndex = Int.random(in: 0..<obstacleTextures.count)
         let obstacleTexture = obstacleTextures[randomIndex]
@@ -255,7 +255,7 @@ class GameScene: SKScene {
         obstacle.physicsBody?.isDynamic = false
         obstacle.physicsBody?.affectedByGravity = false
     }
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !isGameOver {
             guard let touch = touches.first else { return }
@@ -277,19 +277,17 @@ class GameScene: SKScene {
             let maxHopDistance: CGFloat = 80
             var hopDistance: CGFloat = maxHopDistance
 
-            // Use raycasting to detect obstacles in the path
+            // Use raycasting to detect obstacles in the path and adjust hop distance
             let rayEnd = CGPoint(x: frog.position.x + maxHopDistance * normalizedDirection.x, y: frog.position.y + maxHopDistance * normalizedDirection.y)
-
             physicsWorld.enumerateBodies(alongRayStart: frog.position, end: rayEnd) { (body, point, normal, stop) in
-                if let obstacleNode = body.node {
-                    let dx = obstacleNode.position.x - self.frog.position.x
-                    let dy = obstacleNode.position.y - self.frog.position.y
-                    let distanceToObstacle = sqrt(dx * dx + dy * dy)
-                    let minDistance = (obstacleNode.frame.size.width / 2) + (self.frog.frame.size.width / 2) - 20
-
-                    if distanceToObstacle < minDistance + maxHopDistance {
-                        let allowedHopDistance = distanceToObstacle - minDistance
-                        hopDistance = min(hopDistance, allowedHopDistance)
+                if let obstacleNode = body.node, obstacleNode.name == "obstacle" {
+                    let obstacleFrame = obstacleNode.frame.insetBy(dx: 10, dy: 10) // Adjust the frame for more accurate detection
+                    let frogFrame = self.frog.frame.insetBy(dx: 10, dy: 10) // Adjust the frog's frame as well
+                    let intersection = frogFrame.intersection(obstacleFrame)
+                    if !intersection.isNull {
+                        let distanceToIntersection = intersection.width / 2
+                        hopDistance = max(hopDistance - distanceToIntersection, 0)
+                        print("Obstacle detected. Adjusting hop distance to \(hopDistance).")
                         stop.pointee = true
                     }
                 }
@@ -324,18 +322,15 @@ class GameScene: SKScene {
     }
 
     func checkForCollisionsWithFoodItems() {
-        
         // Prevent the score from increasing if the game is over
         guard !isGameOver else { return }
         for foodItem in self.foodItems {
-            let dx = foodItem.position.x - self.frog.position.x
-            let dy = foodItem.position.y - self.frog.position.y
-            let distanceToFood = sqrt(dx * dx + dy * dy)
-            let minDistance = (foodItem.size.width / 2) + (self.frog.size.width / 2)
-            
-            // Update score
-            if distanceToFood < minDistance {
+            if frog.frame.intersects(foodItem.frame) {
+                print("Collision detected with food item. Updating score.")
                 foodItem.removeFromParent()
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.prepare()
+                generator.impactOccurred()
                 switch foodItem.texture {
                 case self.fly1Texture, self.fly2Texture:
                     self.score += 2
@@ -348,10 +343,9 @@ class GameScene: SKScene {
             }
         }
     }
-    
+
     override func update(_ currentTime: TimeInterval) {
         // Update game state
         // You can add any necessary game state updates here
     }
 }
-
