@@ -277,17 +277,18 @@ class GameScene: SKScene {
             let maxHopDistance: CGFloat = 80
             var hopDistance: CGFloat = maxHopDistance
 
-            // Use raycasting to detect obstacles in the path and adjust hop distance
+            // Use raycasting to detect obstacles in the path
             let rayEnd = CGPoint(x: frog.position.x + maxHopDistance * normalizedDirection.x, y: frog.position.y + maxHopDistance * normalizedDirection.y)
             physicsWorld.enumerateBodies(alongRayStart: frog.position, end: rayEnd) { (body, point, normal, stop) in
-                if let obstacleNode = body.node, obstacleNode.name == "obstacle" {
-                    let obstacleFrame = obstacleNode.frame.insetBy(dx: 10, dy: 10) // Adjust the frame for more accurate detection
-                    let frogFrame = self.frog.frame.insetBy(dx: 10, dy: 10) // Adjust the frog's frame as well
-                    let intersection = frogFrame.intersection(obstacleFrame)
-                    if !intersection.isNull {
-                        let distanceToIntersection = intersection.width / 2
-                        hopDistance = max(hopDistance - distanceToIntersection, 0)
-                        print("Obstacle detected. Adjusting hop distance to \(hopDistance).")
+                if let obstacleNode = body.node {
+                    let dx = obstacleNode.position.x - self.frog.position.x
+                    let dy = obstacleNode.position.y - self.frog.position.y
+                    let distanceToObstacle = sqrt(dx * dx + dy * dy)
+                    let minDistance = (obstacleNode.frame.size.width / 2) + (self.frog.frame.size.width / 2) - 20
+
+                    if distanceToObstacle < minDistance + maxHopDistance {
+                        let allowedHopDistance = distanceToObstacle - minDistance
+                        hopDistance = min(hopDistance, allowedHopDistance)
                         stop.pointee = true
                     }
                 }
@@ -325,8 +326,14 @@ class GameScene: SKScene {
         // Prevent the score from increasing if the game is over
         guard !isGameOver else { return }
         for foodItem in self.foodItems {
-            if frog.frame.intersects(foodItem.frame) {
-                print("Collision detected with food item. Updating score.")
+            let dx = foodItem.position.x - self.frog.position.x
+            let dy = foodItem.position.y - self.frog.position.y
+            let distanceToFood = sqrt(dx * dx + dy * dy)
+            let minDistance = (foodItem.size.width / 2) + (self.frog.size.width / 2)
+            
+            // Update score
+            if distanceToFood < minDistance {
+                print("Frog Ate Bug!!")
                 foodItem.removeFromParent()
                 let generator = UIImpactFeedbackGenerator(style: .medium)
                 generator.prepare()
