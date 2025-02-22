@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		588F4FFF2D69A39F006CA0F5 /* eat_sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 588F4FFE2D69A39F006CA0F5 /* eat_sound.mp3 */; };
 		636008A929C60C2C00B83E75 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636008A829C60C2C00B83E75 /* AppDelegate.swift */; };
 		636008AB29C60C2C00B83E75 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 636008AA29C60C2C00B83E75 /* GameScene.sks */; };
 		636008AD29C60C2C00B83E75 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 636008AC29C60C2C00B83E75 /* Actions.sks */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		588F4FFE2D69A39F006CA0F5 /* eat_sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = eat_sound.mp3; sourceTree = "<group>"; };
 		636008A529C60C2C00B83E75 /* Froggy Hopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Froggy Hopper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		636008A829C60C2C00B83E75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		636008AA29C60C2C00B83E75 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				6365BDA22A36C0140049C64F /* BackgroundMusic8.mp3 */,
 				6365BDA32A36C0160049C64F /* BackgroundMusic9.mp3 */,
 				6365BDA12A36C0120049C64F /* BackgroundMusic10.mp3 */,
+				588F4FFE2D69A39F006CA0F5 /* eat_sound.mp3 */,
 				636008B229C60C2C00B83E75 /* Main.storyboard */,
 				636008B729C60C3000B83E75 /* LaunchScreen.storyboard */,
 				636008B529C60C3000B83E75 /* Assets.xcassets */,
@@ -137,7 +140,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1420;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					636008A429C60C2C00B83E75 = {
 						CreatedOnToolsVersion = 14.2;
@@ -180,6 +183,7 @@
 				6365BD9F2A36C0010049C64F /* BackgroundMusic7.mp3 in Resources */,
 				636008B929C60C3000B83E75 /* LaunchScreen.storyboard in Resources */,
 				6365BD9D2A36C0010049C64F /* BackgroundMusic3.mp3 in Resources */,
+				588F4FFF2D69A39F006CA0F5 /* eat_sound.mp3 in Resources */,
 				6365BDA62A36C0160049C64F /* BackgroundMusic9.mp3 in Resources */,
 				636008AD29C60C2C00B83E75 /* Actions.sks in Resources */,
 			);
@@ -226,6 +230,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -258,6 +263,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -287,6 +293,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -319,6 +326,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -365,7 +373,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "SHPSHL-WRX.iFrog";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -405,7 +413,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "SHPSHL-WRX.iFrog";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

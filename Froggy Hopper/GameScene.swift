@@ -8,14 +8,11 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     // Initialize the game elements
     var rock1Texture: SKTexture!
     var rock2Texture: SKTexture!
     var rock3Texture: SKTexture!
-    var log1Texture: SKTexture!
-    var log2Texture: SKTexture!
-    var log3Texture: SKTexture!
     var frog: SKSpriteNode!
     var fly1Texture: SKTexture!
     var fly2Texture: SKTexture!
@@ -35,7 +32,18 @@ class GameScene: SKScene {
     var isGameOver = false
     var backgroundMusicFiles: [String] = ["BackgroundMusic1.mp3", "BackgroundMusic2.mp3", "BackgroundMusic3.mp3", "BackgroundMusic4.mp3", "BackgroundMusic5.mp3", "BackgroundMusic6.mp3", "BackgroundMusic7.mp3", "BackgroundMusic8.mp3", "BackgroundMusic9.mp3", "BackgroundMusic10.mp3"]
 
+    // Physics categories
+    struct PhysicsCategory {
+        static let none      : UInt32 = 0
+        static let frog      : UInt32 = 0b1      // 1
+        static let food      : UInt32 = 0b10     // 2
+        static let obstacle  : UInt32 = 0b100    // 4
+        static let all       : UInt32 = UInt32.max
+    }
+
     override func didMove(to view: SKView) {
+        // Set up physics world contact delegate
+        physicsWorld.contactDelegate = self
         loadLevel()
     }
 
@@ -74,11 +82,17 @@ class GameScene: SKScene {
         frog = SKSpriteNode(imageNamed: "frog")
         frog.position = CGPoint(x: size.width / 2, y: size.height / 4)
         frog.zPosition = 1
-        addChild(frog)
-
-        // Set up frog physics body
-        frog.physicsBody = SKPhysicsBody(rectangleOf: frog.size)
+        frog.setScale(1.15)  // Set frog size
+        
+        // Calculate physics body size (70% of visual size)
+        let frogRadius = min(frog.size.width, frog.size.height) * 0.35
+        frog.physicsBody = SKPhysicsBody(circleOfRadius: frogRadius)
         frog.physicsBody?.isDynamic = false
+        frog.physicsBody?.categoryBitMask = PhysicsCategory.frog
+        frog.physicsBody?.contactTestBitMask = PhysicsCategory.food
+        frog.physicsBody?.collisionBitMask = PhysicsCategory.none
+        
+        addChild(frog)
 
         // Set up food item textures
         fly1Texture = SKTexture(imageNamed: "fly1")
@@ -92,9 +106,6 @@ class GameScene: SKScene {
         rock1Texture = SKTexture(imageNamed: "rock1")
         rock2Texture = SKTexture(imageNamed: "rock2")
         rock3Texture = SKTexture(imageNamed: "rock3")
-        log1Texture = SKTexture(imageNamed: "log1")
-        log2Texture = SKTexture(imageNamed: "log2")
-        log3Texture = SKTexture(imageNamed: "log3")
 
         // Set up score label
         scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
@@ -133,11 +144,11 @@ class GameScene: SKScene {
             spawnObstacle()
         }
 
-        // Set up timer to spawn new food items every 1.5 to 3 seconds
+        // Set up timer to spawn new food items
         let spawnAction = SKAction.run {
             self.spawnFood()
         }
-        let randomSpawnTime = SKAction.wait(forDuration: TimeInterval.random(in: 1.5...3))
+        let randomSpawnTime = SKAction.wait(forDuration: TimeInterval.random(in: 0.9...1.5))
         let spawnSequence = SKAction.sequence([spawnAction, randomSpawnTime])
         let spawnRepeat = SKAction.repeatForever(spawnSequence)
         run(spawnRepeat)
@@ -201,18 +212,55 @@ class GameScene: SKScene {
     }
 
     func spawnFood() {
-        // Spawn a random food item at a random location
+        // Spawn multiple food items at once
         let foodTextures = [fly1Texture, fly2Texture, spider1Texture, spider2Texture, ant1Texture, ant2Texture]
-
-        for _ in 0..<1 {
+        
+        // Spawn 2-3 items at once
+        let spawnCount = Int.random(in: 2...3)
+        
+        for _ in 0..<spawnCount {
+            // Spawn a random food item at a random location
             let randomIndex = Int.random(in: 0..<foodTextures.count)
             let foodTexture = foodTextures[randomIndex]
             let foodItem = SKSpriteNode(texture: foodTexture)
-            let randomX = CGFloat.random(in: 0..<size.width)
-            let randomY = CGFloat.random(in: 0..<size.height)
-
+            
+            // Set size based on food type
+            switch foodTexture {
+            case spider1Texture, spider2Texture:
+                foodItem.setScale(1.5)  // Make spiders 50% bigger
+            case ant1Texture, ant2Texture:
+                foodItem.setScale(1.3)  // Make ants 30% bigger
+            default:
+                break  // Keep flies at normal size
+            }
+            
+            // Ensure food spawns away from the frog
+            let minDistance: CGFloat = 100  // Minimum spawn distance from frog
+            var randomX: CGFloat
+            var randomY: CGFloat
+            var distanceFromFrog: CGFloat
+            
+            repeat {
+                randomX = CGFloat.random(in: 0..<size.width)
+                randomY = CGFloat.random(in: 0..<size.height)
+                let dx = randomX - frog.position.x
+                let dy = randomY - frog.position.y
+                distanceFromFrog = sqrt(dx * dx + dy * dy)
+            } while distanceFromFrog < minDistance
+            
             foodItem.position = CGPoint(x: randomX, y: randomY)
             foodItem.zPosition = 1
+            foodItem.name = "food"
+            
+            // Calculate physics body size (60% of visual size for better precision)
+            let foodPhysicsRadius = min(foodItem.size.width, foodItem.size.height) * 0.3
+            foodItem.physicsBody = SKPhysicsBody(circleOfRadius: foodPhysicsRadius)
+            foodItem.physicsBody?.isDynamic = true
+            foodItem.physicsBody?.affectedByGravity = false
+            foodItem.physicsBody?.categoryBitMask = PhysicsCategory.food
+            foodItem.physicsBody?.contactTestBitMask = PhysicsCategory.frog
+            foodItem.physicsBody?.collisionBitMask = PhysicsCategory.none
+            
             addChild(foodItem)
             foodItems.append(foodItem)
 
@@ -237,23 +285,38 @@ class GameScene: SKScene {
     }
 
     func spawnObstacle() {
-        // Spawn a random obstacle at a random location
-        let obstacleTextures = [rock1Texture, rock2Texture, rock3Texture, log1Texture, log2Texture, log3Texture]
+        // Spawn a random rock obstacle at a random location
+        let obstacleTextures = [rock1Texture, rock2Texture, rock3Texture]
         let randomIndex = Int.random(in: 0..<obstacleTextures.count)
         let obstacleTexture = obstacleTextures[randomIndex]
         let obstacle = SKSpriteNode(texture: obstacleTexture)
-        let randomX = CGFloat.random(in: 0..<size.width)
-        let randomY = CGFloat.random(in: 0..<size.height)
+        
+        // Ensure obstacles spawn away from the frog
+        let minDistance: CGFloat = 100  // Minimum spawn distance from frog
+        var randomX: CGFloat
+        var randomY: CGFloat
+        var distanceFromFrog: CGFloat
+        
+        repeat {
+            randomX = CGFloat.random(in: 0..<size.width)
+            randomY = CGFloat.random(in: 0..<size.height)
+            let dx = randomX - frog.position.x
+            let dy = randomY - frog.position.y
+            distanceFromFrog = sqrt(dx * dx + dy * dy)
+        } while distanceFromFrog < minDistance
 
         obstacle.position = CGPoint(x: randomX, y: randomY)
         obstacle.zPosition = 1
         addChild(obstacle)
         obstacles.append(obstacle)
 
-        // Set up obstacle physics body
-        obstacle.physicsBody = SKPhysicsBody(rectangleOf: obstacle.size)
+        // Set up circular physics body for rock
+        let obstacleRadius = min(obstacle.size.width, obstacle.size.height) * 0.25
+        obstacle.physicsBody = SKPhysicsBody(circleOfRadius: obstacleRadius)
         obstacle.physicsBody?.isDynamic = false
         obstacle.physicsBody?.affectedByGravity = false
+        obstacle.physicsBody?.categoryBitMask = PhysicsCategory.obstacle
+        obstacle.physicsBody?.collisionBitMask = PhysicsCategory.none
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -302,10 +365,7 @@ class GameScene: SKScene {
             let moveAction = SKAction.move(to: newPosition, duration: 0.4)
             let jumpUpAction = SKAction.moveBy(x: 0, y: 10, duration: 0.1)
             let jumpDownAction = SKAction.moveBy(x: 0, y: -10, duration: 0.1)
-            let checkCollisionAction = SKAction.run {
-                self.checkForCollisionsWithFoodItems()
-            }
-            let jumpSequence = SKAction.sequence([jumpUpAction, moveAction, jumpDownAction, checkCollisionAction])
+            let jumpSequence = SKAction.sequence([jumpUpAction, moveAction, jumpDownAction])
             frog.run(jumpSequence)
         } else {
             guard let touch = touches.first else { return }
@@ -322,33 +382,122 @@ class GameScene: SKScene {
         }
     }
 
-    func checkForCollisionsWithFoodItems() {
-        // Prevent the score from increasing if the game is over
-        guard !isGameOver else { return }
-        for foodItem in self.foodItems {
-            let dx = foodItem.position.x - self.frog.position.x
-            let dy = foodItem.position.y - self.frog.position.y
-            let distanceToFood = sqrt(dx * dx + dy * dy)
-            let minDistance = (foodItem.size.width / 2) + (self.frog.size.width / 2)
+    // Create particle effect for bug consumption
+    func createEatingEffect(at position: CGPoint, color: SKColor) {
+        guard let particleEmitter = SKEmitterNode(fileNamed: "BugSplat") else {
+            // Fallback if particle file doesn't exist
+            let particles = SKEmitterNode()
+            particles.particleTexture = SKTexture(imageNamed: "spark")
+            particles.position = position
+            particles.particleBirthRate = 100
+            particles.numParticlesToEmit = 10
+            particles.particleLifetime = 0.5
+            particles.particleSpeed = 50
+            particles.particleSpeedRange = 20
+            particles.particleColor = color
+            particles.particleColorBlendFactor = 1.0
+            particles.particleScale = 0.2
+            particles.particleScaleRange = 0.1
+            particles.emissionAngle = 0.0
+            particles.emissionAngleRange = CGFloat.pi * 2
+            particles.particleAlpha = 0.8
+            particles.particleAlphaSpeed = -1.0
             
-            // Update score
-            if distanceToFood < minDistance {
-                print("Frog Ate Bug!!")
-                foodItem.removeFromParent()
-                let generator = UIImpactFeedbackGenerator(style: .medium)
-                generator.prepare()
-                generator.impactOccurred()
-                switch foodItem.texture {
-                case self.fly1Texture, self.fly2Texture:
-                    self.score += 2
-                case self.spider1Texture, self.spider2Texture, self.ant1Texture, self.ant2Texture:
-                    self.score += 1
-                default:
-                    break
-                }
-                self.scoreLabel.text = "Score: \(self.score)"
-            }
+            addChild(particles)
+            let waitAction = SKAction.wait(forDuration: 0.5)
+            let removeAction = SKAction.removeFromParent()
+            particles.run(SKAction.sequence([waitAction, removeAction]))
+            return
         }
+        
+        // Configure and add the loaded particle emitter
+        particleEmitter.position = position
+        particleEmitter.particleColor = color
+        particleEmitter.particleColorBlendFactor = 1.0
+        addChild(particleEmitter)
+        
+        // Remove after animation completes
+        let waitAction = SKAction.wait(forDuration: 0.5)
+        let removeAction = SKAction.removeFromParent()
+        particleEmitter.run(SKAction.sequence([waitAction, removeAction]))
+    }
+
+    // Replace checkForCollisionsWithFoodItems with physics contact handling
+    func didBegin(_ contact: SKPhysicsContact) {
+        // Ensure we're still playing
+        guard !isGameOver else { return }
+        
+        var foodNode: SKSpriteNode?
+        
+        // Sort out which node is the food
+        if contact.bodyA.categoryBitMask == PhysicsCategory.food {
+            foodNode = contact.bodyA.node as? SKSpriteNode
+        } else if contact.bodyB.categoryBitMask == PhysicsCategory.food {
+            foodNode = contact.bodyB.node as? SKSpriteNode
+        }
+        
+        guard let food = foodNode else { return }
+        
+        // Double check the distance (belt and suspenders approach)
+        let dx = food.position.x - frog.position.x
+        let dy = food.position.y - frog.position.y
+        let distanceToFood = sqrt(dx * dx + dy * dy)
+        let maxCollisionDistance = (food.size.width + frog.size.width) * 0.4  // 40% of combined sizes
+        
+        guard distanceToFood <= maxCollisionDistance else { return }
+        
+        // Create particle effect based on food type
+        var particleColor: SKColor
+        var points = 0
+        
+        switch food.texture {
+        case fly1Texture, fly2Texture:
+            particleColor = .green
+            points = 2
+        case spider1Texture, spider2Texture:
+            particleColor = .brown
+            points = 2
+        case ant1Texture, ant2Texture:
+            particleColor = .red
+            points = 1
+        default:
+            particleColor = .white
+            points = 0
+        }
+        
+        // Create eating effect
+        createEatingEffect(at: food.position, color: particleColor)
+        
+        // Play sound effect and haptic feedback
+        SoundManager.shared.playSoundEffect(named: "eat_sound.mp3")
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.prepare()
+        generator.impactOccurred()
+        
+        // Update score
+        score += points
+        scoreLabel.text = "Score: \(score)"
+        
+        // Remove the food
+        food.removeFromParent()
+        if let index = foodItems.firstIndex(of: food) {
+            foodItems.remove(at: index)
+        }
+        
+        // Add score popup
+        let scorePopup = SKLabelNode(fontNamed: "Chalkduster")
+        scorePopup.text = "+\(points)"
+        scorePopup.fontSize = 24
+        scorePopup.fontColor = .yellow
+        scorePopup.position = food.position
+        scorePopup.zPosition = 3
+        addChild(scorePopup)
+        
+        let moveUp = SKAction.moveBy(x: 0, y: 40, duration: 0.5)
+        let fadeOut = SKAction.fadeOut(withDuration: 0.5)
+        let group = SKAction.group([moveUp, fadeOut])
+        let remove = SKAction.removeFromParent()
+        scorePopup.run(SKAction.sequence([group, remove]))
     }
 
     override func update(_ currentTime: TimeInterval) {
