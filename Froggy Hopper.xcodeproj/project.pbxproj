@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		588F4FFF2D69A39F006CA0F5 /* eat_sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 588F4FFE2D69A39F006CA0F5 /* eat_sound.mp3 */; };
+		588F50012D69B6B5006CA0F5 /* WelcomeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 588F50002D69B6B5006CA0F5 /* WelcomeScene.swift */; };
 		636008A929C60C2C00B83E75 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636008A829C60C2C00B83E75 /* AppDelegate.swift */; };
 		636008AB29C60C2C00B83E75 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 636008AA29C60C2C00B83E75 /* GameScene.sks */; };
 		636008AD29C60C2C00B83E75 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 636008AC29C60C2C00B83E75 /* Actions.sks */; };
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		588F4FFE2D69A39F006CA0F5 /* eat_sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = eat_sound.mp3; sourceTree = "<group>"; };
+		588F50002D69B6B5006CA0F5 /* WelcomeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScene.swift; sourceTree = "<group>"; };
 		636008A529C60C2C00B83E75 /* Froggy Hopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Froggy Hopper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		636008A829C60C2C00B83E75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		636008AA29C60C2C00B83E75 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 				636008A829C60C2C00B83E75 /* AppDelegate.swift */,
 				63B2AAAC29C7A73400B58549 /* SceneDelegate.swift */,
 				636008AE29C60C2C00B83E75 /* GameScene.swift */,
+				588F50002D69B6B5006CA0F5 /* WelcomeScene.swift */,
 				636008B029C60C2C00B83E75 /* GameViewController.swift */,
 				6365BD912A36A2D00049C64F /* SoundManager.swift */,
 				6365BD942A36AD470049C64F /* BackgroundMusic1.mp3 */,
@@ -199,6 +202,7 @@
 				636008AF29C60C2C00B83E75 /* GameScene.swift in Sources */,
 				636008B129C60C2C00B83E75 /* GameViewController.swift in Sources */,
 				636008A929C60C2C00B83E75 /* AppDelegate.swift in Sources */,
+				588F50012D69B6B5006CA0F5 /* WelcomeScene.swift in Sources */,
 				63B2AAAD29C7A73400B58549 /* SceneDelegate.swift in Sources */,
 				6365BD922A36A2D00049C64F /* SoundManager.swift in Sources */,
 			);
