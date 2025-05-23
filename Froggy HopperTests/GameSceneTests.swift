@@ -1,5 +1,4 @@
 import XCTest
-// Removed duplicate import XCTest
 import SpriteKit // Import SpriteKit for SKNode, SKAction, etc.
 @testable import Froggy_Hopper
 
