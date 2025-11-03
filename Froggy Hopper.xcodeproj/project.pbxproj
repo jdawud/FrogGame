@@ -10,6 +10,8 @@
 		585BFDE52EB90E2D00E63FE9 /* Froggy_HopperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BFDE22EB90E2D00E63FE9 /* Froggy_HopperTests.swift */; };
 		585BFDE62EB90E2D00E63FE9 /* GameSceneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BFDE32EB90E2D00E63FE9 /* GameSceneTests.swift */; };
 		585BFDE72EB90E2D00E63FE9 /* SoundManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BFDE42EB90E2D00E63FE9 /* SoundManagerTests.swift */; };
+		585BFDEB2EB9164600E63FE9 /* WelcomeSceneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BFDEA2EB9164600E63FE9 /* WelcomeSceneTests.swift */; };
+		585BFDED2EB9165300E63FE9 /* GameViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BFDEC2EB9165300E63FE9 /* GameViewControllerTests.swift */; };
 		588F4FFF2D69A39F006CA0F5 /* eat_sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 588F4FFE2D69A39F006CA0F5 /* eat_sound.mp3 */; };
 		588F50012D69B6B5006CA0F5 /* WelcomeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 588F50002D69B6B5006CA0F5 /* WelcomeScene.swift */; };
 		58EDAFDB2DE00E3400ABCC03 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 58EDAFDA2DE00E3400ABCC03 /* AsyncAlgorithms */; };
@@ -53,6 +55,8 @@
 		585BFDE32EB90E2D00E63FE9 /* GameSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneTests.swift; sourceTree = "<group>"; };
 		585BFDE42EB90E2D00E63FE9 /* SoundManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManagerTests.swift; sourceTree = "<group>"; };
 		585BFDE82EB90E3C00E63FE9 /* Froggy HopperTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Froggy HopperTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		585BFDEA2EB9164600E63FE9 /* WelcomeSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSceneTests.swift; sourceTree = "<group>"; };
+		585BFDEC2EB9165300E63FE9 /* GameViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewControllerTests.swift; sourceTree = "<group>"; };
 		588F4FFE2D69A39F006CA0F5 /* eat_sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = eat_sound.mp3; sourceTree = "<group>"; };
 		588F50002D69B6B5006CA0F5 /* WelcomeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScene.swift; sourceTree = "<group>"; };
 		636008A529C60C2C00B83E75 /* Froggy Hopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Froggy Hopper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -103,6 +107,8 @@
 		585BFDE92EB90E7B00E63FE9 /* Froggy HopperTests */ = {
 			isa = PBXGroup;
 			children = (
+				585BFDEC2EB9165300E63FE9 /* GameViewControllerTests.swift */,
+				585BFDEA2EB9164600E63FE9 /* WelcomeSceneTests.swift */,
 				585BFDE22EB90E2D00E63FE9 /* Froggy_HopperTests.swift */,
 				585BFDE32EB90E2D00E63FE9 /* GameSceneTests.swift */,
 				585BFDE42EB90E2D00E63FE9 /* SoundManagerTests.swift */,
@@ -280,8 +286,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				585BFDE52EB90E2D00E63FE9 /* Froggy_HopperTests.swift in Sources */,
+				585BFDED2EB9165300E63FE9 /* GameViewControllerTests.swift in Sources */,
 				585BFDE62EB90E2D00E63FE9 /* GameSceneTests.swift in Sources */,
 				585BFDE72EB90E2D00E63FE9 /* SoundManagerTests.swift in Sources */,
+				585BFDEB2EB9164600E63FE9 /* WelcomeSceneTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

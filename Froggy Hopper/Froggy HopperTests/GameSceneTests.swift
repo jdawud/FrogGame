@@ -76,6 +76,40 @@ struct GameSceneTests {
         #expect(GameScene.PhysicsCategory.none == 0)
     }
 
+    @Test
+    func spawnFoodAddsItemsWithCorrectPhysics() {
+        let scene = TestGameScene(size: CGSize(width: 1024, height: 768))
+        scene.prepareForTesting()
+
+        let initialCount = scene.foodItems.count
+        scene.spawnFood()
+        #expect(scene.foodItems.count > initialCount)
+
+        // Check a sample item
+        let sample = scene.foodItems.last
+        #expect(sample != nil)
+        #expect(sample?.physicsBody?.categoryBitMask == GameScene.PhysicsCategory.food)
+        #expect(sample?.physicsBody?.contactTestBitMask == GameScene.PhysicsCategory.frog)
+        #expect(sample?.physicsBody?.collisionBitMask == GameScene.PhysicsCategory.none)
+    }
+
+    @Test
+    func spawnObstacleAddsObstaclesWithCorrectPhysics() {
+        let scene = TestGameScene(size: CGSize(width: 1024, height: 768))
+        scene.prepareForTesting()
+
+        let initialCount = scene.obstacles.count
+        scene.spawnObstacle()
+        #expect(scene.obstacles.count == initialCount + 1)
+
+        let sample = scene.obstacles.last
+        #expect(sample != nil)
+        #expect(sample?.physicsBody?.isDynamic == false)
+        #expect(sample?.physicsBody?.affectedByGravity == false)
+        #expect(sample?.physicsBody?.categoryBitMask == GameScene.PhysicsCategory.obstacle)
+        #expect(sample?.physicsBody?.collisionBitMask == GameScene.PhysicsCategory.none)
+    }
+
     private func findResultLabel(in scene: SKNode, named name: String) -> SKLabelNode? {
         for node in scene.children {
             for child in node.children {
@@ -100,6 +134,16 @@ private final class TestGameScene: GameScene {
         score = 0
         level = 1
         gameTime = 120
+        // Initialize textures used by spawnFood/spawnObstacle
+        fly1Texture = SKTexture(imageNamed: "fly1")
+        fly2Texture = SKTexture(imageNamed: "fly2")
+        spider1Texture = SKTexture(imageNamed: "spider1")
+        spider2Texture = SKTexture(imageNamed: "spider2")
+        ant1Texture = SKTexture(imageNamed: "ant1")
+        ant2Texture = SKTexture(imageNamed: "ant2")
+        rock1Texture = SKTexture(imageNamed: "rock1")
+        rock2Texture = SKTexture(imageNamed: "rock2")
+        rock3Texture = SKTexture(imageNamed: "rock3")
         loadLevel()
     }
 

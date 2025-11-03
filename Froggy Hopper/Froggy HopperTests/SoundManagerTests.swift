@@ -54,6 +54,44 @@ struct SoundManagerTests {
 
         #expect(player.isPlaying == false)
     }
-}
 
-// No stub needed: tests use real AVAudioPlayer constructed from bundled resources.
+    @Test
+    func playBackgroundMusicPlaysValidFile() {
+        let manager = SoundManager()
+        manager.playBackgroundMusic(filename: "BackgroundMusic1.mp3")
+        #expect(manager.audioPlayer != nil)
+        #expect(manager.audioPlayer?.numberOfLoops == -1)
+    }
+
+    @Test
+    func playBackgroundMusicMissingFileDoesNotSetPlayer() {
+        let manager = SoundManager()
+        manager.audioPlayer = nil
+        manager.playBackgroundMusic(filename: "missing.mp3")
+        #expect(manager.audioPlayer == nil)
+    }
+
+    @Test
+    func playSoundEffectCachesAndResetsIfAlreadyPlaying() throws {
+        let manager = SoundManager()
+        manager.playSoundEffect(named: "eat_sound.mp3")
+        let first = try #require(manager.soundEffects["eat_sound.mp3"])
+        first.currentTime = 0.42
+        manager.playSoundEffect(named: "eat_sound.mp3")
+        #expect(first.isPlaying == false)
+        #expect(first.currentTime == 0)
+        let current = try #require(manager.soundEffects["eat_sound.mp3"])
+        #expect(current.isPlaying)
+    }
+
+    @Test
+    func stopSoundEffectIsIdempotent() throws {
+        let manager = SoundManager()
+        manager.playSoundEffect(named: "eat_sound.mp3")
+        let cached = try #require(manager.soundEffects["eat_sound.mp3"])
+        manager.stopSoundEffect(named: "eat_sound.mp3")
+        #expect(cached.isPlaying == false)
+        manager.stopSoundEffect(named: "eat_sound.mp3")
+        #expect(cached.isPlaying == false)
+    }
+}
