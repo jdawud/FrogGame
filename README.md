@@ -1,64 +1,51 @@
 # Froggy Hopper 🐸
 
-![Gameplay Screenshot](screenshot.jpg) *<!-- Add actual screenshot file later -->*
+Froggy Hopper is a simple SpriteKit experiment that follows a hungry frog as it hops around a jungle clearing to snack on insects. The project demonstrates how to build a lightweight iOS arcade scene in Swift with touch controls, basic physics, audio, and haptic feedback. All code targets iOS 13+ and is organised as a standard Xcode project.
 
-A modern iOS arcade game built with SpriteKit featuring a hungry frog collecting bugs while avoiding obstacles. Published open-source to demonstrate Swift game development best practices.
+## 🎮 Gameplay overview
+- **Tap-to-hop controls** – Touch anywhere on the screen to launch the frog in that direction. The frog automatically mirrors to face the hop direction and shortens its jump when a rock blocks the path.
+- **Collectible bugs** – Flies, spiders, and ants spawn around the clearing. Each type uses a different texture, scale, and point value, and despawns automatically if ignored.
+- **Static obstacles** – Rocks appear at random locations during level loading and are used for hop-shortening collision checks.
+- **Timer and scoring UI** – Heads-up display shows the remaining time (starting at 120 seconds), the current level, and the total score.
+- **Simple level progression** – Clearing a level (reaching the target score before time expires) unlocks the next stage, swapping in a new background texture and background music track from the bundled set of ten.
+- **Welcoming title screen** – A custom Welcome scene handles the start button animation, looping background music, and ambient fly sprites before presenting the game scene.
+- **Audio & haptics** – Background music and bite sound effects are managed by `SoundManager`, and successful bites trigger a medium-impact haptic pulse.
 
-## 🎮 Features
-- **Character Control**: Tap-based movement system with smooth animations
-- **Dynamic Environment**: Procedurally generated obstacles (logs, rocks) and collectibles (flies, spiders)
-- **Progression System**: 10 levels with increasing difficulty and unique background music per level
-- **Score Tracking**: Real-time scoring system with win/lose conditions
-- **Time Challenge**: 2-minute countdown timer with visual feedback
-- **Audio Management**: Background music and sound effects handling via dedicated `SoundManager`
-- **Adaptive UI**: Responsive layout supporting all iOS device sizes
+## 🏆 Scoring
+| Action              | Points |
+|---------------------|--------|
+| Eat fly (green)     | +2     |
+| Eat spider (brown)  | +2     |
+| Eat ant (red)       | +1     |
 
-## 🛠️ Architecture
-**Tech Stack**: Swift 5, SpriteKit, GameplayKit
+- **Win condition**: Reach 100 points before the 120-second timer reaches zero.
+- **Try again**: If time runs out before hitting the target score, the scene resets and keeps you on the current level.
 
-### Key Components:
-1. **GameViewController (Entry Point)**
-   - Manages SKView presentation
-   - Configures scene scaling and debug settings
-   - Handles device orientation
-
-2. **GameScene (Core Logic)**
-   - Manages game state (playing/over)
-   - Handles touch input and physics collisions
-   - Controls spawn systems for:
-     - Collectible food items 🪰
-     - Environmental obstacles 🪵
-   - Implements level progression system
-
-3. **SoundManager (Audio Service)**
-   - Background music playlist management
-   - Sound effect triggering system
-   - Audio session configuration
-
-## 📥 Installation
-```bash
-git clone https://github.com/jdawud/FrogGame.git
-open Froggy\ Hopper.xcodeproj
+## 🛠️ Project structure
+```
+Froggy Hopper/
+├── AppDelegate.swift / SceneDelegate.swift
+├── GameViewController.swift        # Presents the welcome screen
+├── WelcomeScene.swift              # Animated start screen with Start button
+├── GameScene.swift                 # Core gameplay loop, spawning, and scoring
+├── SoundManager.swift              # Background music & sound effect helper
+├── Assets.xcassets                 # Sprites, backgrounds, icons
+└── *.sks & audio files             # Scene files and background tracks
 ```
 
-## 🏆 Scoring System
-| Action                | Points |
-|-----------------------|--------|
-| Collect Fly           | +10    |
-| Avoid Spider          | +5     |
-| Complete Level        | +25    |
-| Hit Obstacle          | -15    |
+## 📥 Getting started
+1. Clone the repository and open the Xcode project:
+   ```bash
+   git clone https://github.com/jdawud/FrogGame.git
+   cd FrogGame
+   open "Froggy Hopper.xcodeproj"
+   ```
+2. Select the **Froggy Hopper** target and run it on the iOS Simulator or a connected device.
 
-**Win Condition**: Reach 100+ points before timer expires
+> The repository does not include a compiled build or app store metadata—launching the project in Xcode is the recommended way to explore the game.
 
 ## 🤝 Contributing
-We welcome contributions! Please follow our:
-- [Code Style Guide](CODESTYLE.md)
-- [Issue Reporting Guidelines](CONTRIBUTING.md)
-
-🔒 **Prohibited**:
-- Breaking changes to core gameplay mechanics
-- Introduction of non-SpriteKit dependencies
+Contributions are welcome! Feel free to open an issue or submit a pull request if you spot a bug or want to add a new feature.
 
 ## 📜 License
-[MIT Licensed](LICENSE) - Free for educational and commercial use
+Released under the [MIT License](LICENSE).
