@@ -1,11 +1,20 @@
 import SpriteKit
+import UIKit
 
 public class WelcomeScene: SKScene {
-    
+
     // Track animation states
     private var isFrogJumping = false
     private var lastSpawnTime: TimeInterval = 0
-    
+    private var isIPad: Bool {
+        #if os(iOS)
+        return UIDevice.current.userInterfaceIdiom == .pad
+        #else
+        return false
+        #endif
+    }
+    private var layoutScale: CGFloat { isIPad ? 1.35 : 1.0 }
+
     public override func didMove(to view: SKView) {
         // Start background music
         SoundManager.shared.playBackgroundMusic(filename: "BackgroundMusic10.mp3")
@@ -42,16 +51,16 @@ public class WelcomeScene: SKScene {
         // Create lily pad platform
         let lilyPad = SKSpriteNode(imageNamed: "lily_pad")
         lilyPad.position = CGPoint(x: size.width/2, y: size.height * 0.4)
-        lilyPad.xScale = 1.5
-        lilyPad.yScale = 1.5
+        lilyPad.xScale = 1.5 * layoutScale
+        lilyPad.yScale = 1.5 * layoutScale
         lilyPad.zPosition = 1
         addChild(lilyPad)
-        
+
         // Add welcome frog
         let frog = SKSpriteNode(imageNamed: "frog")
         frog.position = CGPoint(x: size.width/2, y: size.height * 0.4 + 20)
-        frog.xScale = 1.3
-        frog.yScale = 1.3
+        frog.xScale = 1.3 * layoutScale
+        frog.yScale = 1.3 * layoutScale
         frog.zPosition = 2
         frog.name = "welcomeFrog"
         addChild(frog)
@@ -65,7 +74,7 @@ public class WelcomeScene: SKScene {
         // Add title
         let titleLabel = SKLabelNode(fontNamed: "Chalkduster")
         titleLabel.text = "Froggy Feed!"
-        titleLabel.fontSize = 41
+        titleLabel.fontSize = 41 * layoutScale
         titleLabel.fontColor = .white
         titleLabel.position = CGPoint(x: size.width/2, y: size.height * 0.7)
         titleLabel.zPosition = 2
@@ -74,7 +83,7 @@ public class WelcomeScene: SKScene {
         // Add subtitle with animation
         let subtitleLabel = SKLabelNode(fontNamed: "Chalkduster")
         subtitleLabel.text = "Eat bugs, get points!"
-        subtitleLabel.fontSize = 24
+        subtitleLabel.fontSize = 24 * layoutScale
         subtitleLabel.fontColor = .white
         subtitleLabel.position = CGPoint(x: size.width/2, y: size.height * 0.6)
         subtitleLabel.zPosition = 2
@@ -86,8 +95,8 @@ public class WelcomeScene: SKScene {
         subtitleLabel.run(fadeIn)
         
         // Create stylized start button
-        let buttonWidth: CGFloat = 240
-        let buttonHeight: CGFloat = 70
+        let buttonWidth: CGFloat = 240 * layoutScale
+        let buttonHeight: CGFloat = 70 * layoutScale
         
         // Create button shadow
         let buttonShadow = SKShapeNode(rectOf: CGSize(width: buttonWidth, height: buttonHeight), cornerRadius: 20)
@@ -114,10 +123,10 @@ public class WelcomeScene: SKScene {
         buttonBackground.addChild(innerGlow)
         
         addChild(buttonBackground)
-        
+
         let startLabel = SKLabelNode(fontNamed: "Chalkduster")
         startLabel.text = "Start Game"
-        startLabel.fontSize = 28
+        startLabel.fontSize = 28 * layoutScale
         startLabel.fontColor = SKColor(red: 0.1, green: 0.6, blue: 0.3, alpha: 1.0)
         startLabel.position = CGPoint(x: 0, y: -10)
         startLabel.zPosition = 3
