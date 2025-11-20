@@ -7,6 +7,7 @@
 
 import SpriteKit
 import GameplayKit
+import UIKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     // Initialize the game elements
@@ -31,6 +32,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var timerLabel: SKLabelNode!
     var isGameOver = false
     var backgroundMusicFiles: [String] = ["BackgroundMusic1.mp3", "BackgroundMusic2.mp3", "BackgroundMusic3.mp3", "BackgroundMusic4.mp3", "BackgroundMusic5.mp3", "BackgroundMusic6.mp3", "BackgroundMusic7.mp3", "BackgroundMusic8.mp3", "BackgroundMusic9.mp3", "BackgroundMusic10.mp3"]
+    private var isIPad: Bool {
+        #if os(iOS)
+        return UIDevice.current.userInterfaceIdiom == .pad
+        #else
+        return false
+        #endif
+    }
+    private var layoutScale: CGFloat { isIPad ? 1.35 : 1.0 }
 
     // Physics categories
     struct PhysicsCategory {
@@ -70,7 +79,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         background.anchorPoint = CGPoint(x: 0, y: 0)
         background.position = CGPoint(x: 0, y: 0)
         background.zPosition = -1
-        let scaleFactor = size.height / background.size.height
+        let scaleFactor: CGFloat
+        if isIPad {
+            let heightScale = size.height / background.size.height
+            let widthScale = size.width / background.size.width
+            scaleFactor = max(heightScale, widthScale)
+        } else {
+            scaleFactor = size.height / background.size.height
+        }
         background.xScale = scaleFactor
         background.yScale = scaleFactor
         addChild(background)
@@ -82,7 +98,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         frog = SKSpriteNode(imageNamed: "frog")
         frog.position = CGPoint(x: size.width / 2, y: size.height / 4)
         frog.zPosition = 1
-        frog.setScale(1.15)  // Set frog size
+        frog.setScale(1.15 * layoutScale)  // Set frog size
         
         // Calculate physics body size (70% of visual size)
         let frogRadius = min(frog.size.width, frog.size.height) * 0.35
@@ -110,27 +126,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Set up score label
         scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
         scoreLabel.text = "Score: \(score)"
-        scoreLabel.fontSize = 28
+        scoreLabel.fontSize = 28 * layoutScale
         scoreLabel.fontColor = SKColor.red
-        scoreLabel.position = CGPoint(x: (size.width / 2) - 200, y: size.height - 110)
+        scoreLabel.position = CGPoint(x: (size.width / 2) - (isIPad ? 260 : 200), y: size.height - (isIPad ? 150 : 110))
         scoreLabel.zPosition = 2
         addChild(scoreLabel)
 
         // Set up timer label
         timerLabel = SKLabelNode(fontNamed: "Chalkduster")
         timerLabel.text = "Time: \(Int(gameTime))"
-        timerLabel.fontSize = 28
+        timerLabel.fontSize = 28 * layoutScale
         timerLabel.fontColor = SKColor.red
-        timerLabel.position = CGPoint(x: (size.width / 2 ) + 200, y: size.height - 110)
+        timerLabel.position = CGPoint(x: (size.width / 2 ) + (isIPad ? 260 : 200), y: size.height - (isIPad ? 150 : 110))
         timerLabel.zPosition = 2
         addChild(timerLabel)
 
         // Set up level label
         let levelLabel = SKLabelNode(fontNamed: "Chalkduster")
         levelLabel.text = "Level: \(level)"
-        levelLabel.fontSize = 36
+        levelLabel.fontSize = 36 * layoutScale
         levelLabel.fontColor = SKColor.red
-        levelLabel.position = CGPoint(x: size.width / 2, y: size.height - 110)
+        levelLabel.position = CGPoint(x: size.width / 2, y: size.height - (isIPad ? 150 : 110))
         levelLabel.zPosition = 2
         addChild(levelLabel)
 
