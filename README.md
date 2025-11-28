@@ -21,6 +21,11 @@ Froggy Hopper is a simple SpriteKit experiment that follows a hungry frog as it 
 - **Win condition**: Reach 100 points before the 120-second timer reaches zero.
 - **Try again**: If time runs out before hitting the target score, the scene resets and keeps you on the current level.
 
+## 🏅 Game Center leaderboard
+- The game now posts your final level score to the Game Center leaderboard with the identifier `com.froggyhopper.highscores`.
+- On the welcome screen, tap **Leaderboard** to open Apple's built-in Game Center UI and view global rankings.
+- To use the leaderboard in your own bundle ID, enable the Game Center capability for the **Froggy Hopper** target and create a matching leaderboard with the same identifier in App Store Connect.
+
 ## 🛠️ Project structure
 ```
 Froggy Hopper/

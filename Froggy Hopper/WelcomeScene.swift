@@ -132,6 +132,25 @@ public class WelcomeScene: SKScene {
         startLabel.zPosition = 3
         startLabel.name = "startButton"
         buttonBackground.addChild(startLabel)
+
+        // Create leaderboard button
+        let leaderboardButton = SKShapeNode(rectOf: CGSize(width: 200 * layoutScale, height: 60 * layoutScale), cornerRadius: 15)
+        leaderboardButton.fillColor = SKColor(red: 0.18, green: 0.65, blue: 0.38, alpha: 1.0)
+        leaderboardButton.strokeColor = SKColor(white: 1.0, alpha: 0.8)
+        leaderboardButton.lineWidth = 3
+        leaderboardButton.position = CGPoint(x: size.width / 2, y: size.height * 0.08)
+        leaderboardButton.zPosition = 2
+        leaderboardButton.name = "leaderboardButton"
+        addChild(leaderboardButton)
+
+        let leaderboardLabel = SKLabelNode(fontNamed: "Chalkduster")
+        leaderboardLabel.text = "Leaderboard"
+        leaderboardLabel.fontSize = 22 * layoutScale
+        leaderboardLabel.fontColor = .white
+        leaderboardLabel.position = CGPoint(x: 0, y: -8)
+        leaderboardLabel.zPosition = 3
+        leaderboardLabel.name = "leaderboardButton"
+        leaderboardButton.addChild(leaderboardLabel)
         
         // Add button animation
         let buttonScale = SKAction.sequence([
@@ -204,13 +223,27 @@ public class WelcomeScene: SKScene {
                 let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
                 let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
                 let sequence = SKAction.sequence([scaleDown, scaleUp])
-                
+
                 node.run(sequence) { [weak self] in
                     self?.startGame()
                 }
                 return
+            } else if node.name == "leaderboardButton" {
+                let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
+                let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
+                let sequence = SKAction.sequence([scaleDown, scaleUp])
+
+                node.run(sequence) { [weak self] in
+                    self?.showLeaderboard()
+                }
+                return
             }
         }
+    }
+
+    private func showLeaderboard() {
+        guard let viewController = view?.window?.rootViewController else { return }
+        GameCenterManager.shared.presentLeaderboard(from: viewController)
     }
     
     private func startGame() {

@@ -13,6 +13,8 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        GameCenterManager.shared.authenticateLocalPlayer(presentingViewController: self)
         
         guard let skView = view as? SKView else { return }
         
