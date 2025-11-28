@@ -190,6 +190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         SoundManager.shared.stopBackgroundMusic()
         isGameOver = true
         gameTimer?.invalidate()
+        reportScoreToLeaderboard()
         let resultText = score >= 100 ? "Frog Won!" : "Try Again!"
         let nodeName = score >= 100 ? "nextLevelLabel" : "tryAgainLabel"
         // Create a yellow background for the text
@@ -225,6 +226,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         loadLevel()
+    }
+
+    private func reportScoreToLeaderboard() {
+        guard let viewController = view?.window?.rootViewController else { return }
+        GameCenterManager.shared.report(score: score, from: viewController)
     }
 
     func spawnFood() {
