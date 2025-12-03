@@ -189,14 +189,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     func gameOver() {
-        print("🐸🐸🐸 GAME OVER CALLED - Score: \(score) 🐸🐸🐸")
-        
         SoundManager.shared.stopBackgroundMusic()
         isGameOver = true
         gameTimer?.invalidate()
         
         let wonLevel = score >= 100
-        print("🐸 Won level: \(wonLevel) (needed 100, got \(score))")
         
         // Add current level score to cumulative total
         totalScore += score
@@ -275,42 +272,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     /// Reports the total cumulative score to Game Center leaderboard
     private func reportScoreToLeaderboard() {
-        print("🎯 ========== SCORE REPORT ==========")
-        print("🎯 Current level score: \(score)")
-        print("🎯 Total cumulative score: \(totalScore)")
-        print("🎯 Game Center authenticated: \(GKLocalPlayer.local.isAuthenticated)")
-        
-        // Show on-screen debug info
-        showDebugLabel("Submitting score: \(totalScore)...")
-        
-        GameCenterManager.shared.reportScore(totalScore) { [weak self] success in
-            guard let self = self else { return }
-            if success {
-                print("✅ Score \(self.totalScore) submitted successfully!")
-                self.showDebugLabel("✅ Score \(self.totalScore) submitted!")
-            } else {
-                print("❌ Score submission FAILED")
-                self.showDebugLabel("❌ Score submission FAILED")
-            }
-        }
-        print("🎯 ====================================")
-    }
-    
-    /// Shows a temporary debug label on screen (for debugging when console isn't visible)
-    private func showDebugLabel(_ text: String) {
-        let debugLabel = SKLabelNode(fontNamed: "Helvetica-Bold")
-        debugLabel.text = text
-        debugLabel.fontSize = 16
-        debugLabel.fontColor = .cyan
-        debugLabel.position = CGPoint(x: size.width / 2, y: size.height - 180)
-        debugLabel.zPosition = 100
-        addChild(debugLabel)
-        
-        debugLabel.run(SKAction.sequence([
-            SKAction.wait(forDuration: 3.0),
-            SKAction.fadeOut(withDuration: 0.5),
-            SKAction.removeFromParent()
-        ]))
+        GameCenterManager.shared.reportScore(totalScore)
     }
 
     func spawnFood() {
