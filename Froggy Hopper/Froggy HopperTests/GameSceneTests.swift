@@ -132,6 +132,7 @@ private final class TestGameScene: GameScene {
     func prepareForTesting() {
         scaleMode = .aspectFill
         score = 0
+        totalScore = 0
         level = 1
         gameTime = 120
         // Initialize textures used by spawnFood/spawnObstacle

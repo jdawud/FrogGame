@@ -7,6 +7,7 @@
 
 import SpriteKit
 import GameplayKit
+import GameKit
 import UIKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -25,6 +26,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var foodItems: [SKSpriteNode] = []
     var obstacles: [SKSpriteNode] = []
     var score = 0
+    var totalScore = 0  // Cumulative score across all levels
     var level: Int = 1
     var totalLevels: Int = 10
     var gameTime: TimeInterval = 120.0
@@ -187,12 +189,46 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     func gameOver() {
+        print("🐸🐸🐸 GAME OVER CALLED - Score: \(score) 🐸🐸🐸")
+        
         SoundManager.shared.stopBackgroundMusic()
         isGameOver = true
         gameTimer?.invalidate()
+        
+        let wonLevel = score >= 100
+        print("🐸 Won level: \(wonLevel) (needed 100, got \(score))")
+        
+        // Add current level score to cumulative total
+        totalScore += score
+        
+        if wonLevel {
+            // Player completed this level - report achievement
+            GameCenterManager.shared.reportLevelComplete(level)
+            
+            if level >= totalLevels {
+                // 🎉 Player completed the entire game!
+                GameCenterManager.shared.reportGameComplete()
+            }
+        }
+        
+        // Always report cumulative score to leaderboard (Game Center keeps the highest)
         reportScoreToLeaderboard()
-        let resultText = score >= 100 ? "Frog Won!" : "Try Again!"
-        let nodeName = score >= 100 ? "nextLevelLabel" : "tryAgainLabel"
+        
+        // Determine display text
+        let resultText: String
+        let nodeName: String
+        
+        if wonLevel && level >= totalLevels {
+            resultText = "You Beat the Game!"
+            nodeName = "gameCompleteLabel"
+        } else if wonLevel {
+            resultText = "Frog Won!"
+            nodeName = "nextLevelLabel"
+        } else {
+            resultText = "Try Again!"
+            nodeName = "tryAgainLabel"
+        }
+        
         // Create a yellow background for the text
         let background = SKShapeNode(rectOf: CGSize(width: size.width / 2, height: 60), cornerRadius: 20)
         background.fillColor = .yellow
@@ -210,27 +246,71 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         resultLabel.name = nodeName
     }
 
-    func restartGame(restartLevel: Int) {
+    /// Restarts the game at the specified level
+    /// - Parameters:
+    ///   - restartLevel: The level to start at
+    ///   - resetTotalScore: Whether to reset the cumulative total score (true when starting fresh)
+    func restartGame(restartLevel: Int, resetTotalScore: Bool = false) {
         isGameOver = false
         score = 0
         gameTime = 120.0
         level = restartLevel
+        
+        // Reset total score if starting a completely new game
+        if resetTotalScore {
+            totalScore = 0
+        }
 
         // Invalidate existing timer before starting a new one
         gameTimer?.invalidate()
 
-        // Remove "You Won!" or "Try Again!" labels
+        // Remove result labels
         for child in children {
-            if child.name == "nextLevelLabel" || child.name == "tryAgainLabel" {
+            if child.name == "nextLevelLabel" || child.name == "tryAgainLabel" || child.name == "gameCompleteLabel" {
                 child.removeFromParent()
             }
         }
         loadLevel()
     }
 
+    /// Reports the total cumulative score to Game Center leaderboard
     private func reportScoreToLeaderboard() {
-        guard let viewController = view?.window?.rootViewController else { return }
-        GameCenterManager.shared.report(score: score, from: viewController)
+        print("🎯 ========== SCORE REPORT ==========")
+        print("🎯 Current level score: \(score)")
+        print("🎯 Total cumulative score: \(totalScore)")
+        print("🎯 Game Center authenticated: \(GKLocalPlayer.local.isAuthenticated)")
+        
+        // Show on-screen debug info
+        showDebugLabel("Submitting score: \(totalScore)...")
+        
+        GameCenterManager.shared.reportScore(totalScore) { [weak self] success in
+            guard let self = self else { return }
+            if success {
+                print("✅ Score \(self.totalScore) submitted successfully!")
+                self.showDebugLabel("✅ Score \(self.totalScore) submitted!")
+            } else {
+                print("❌ Score submission FAILED")
+                self.showDebugLabel("❌ Score submission FAILED")
+            }
+        }
+        print("🎯 ====================================")
+    }
+    
+    /// Shows a temporary debug label on screen (for debugging when console isn't visible)
+    private func showDebugLabel(_ text: String) {
+        let debugLabel = SKLabelNode(fontNamed: "Helvetica-Bold")
+        debugLabel.text = text
+        debugLabel.fontSize = 16
+        debugLabel.fontColor = .cyan
+        debugLabel.position = CGPoint(x: size.width / 2, y: size.height - 180)
+        debugLabel.zPosition = 100
+        addChild(debugLabel)
+        
+        debugLabel.run(SKAction.sequence([
+            SKAction.wait(forDuration: 3.0),
+            SKAction.fadeOut(withDuration: 0.5),
+            SKAction.removeFromParent()
+        ]))
     }
 
     func spawnFood() {
@@ -395,10 +475,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let touchedNodes = nodes(at: touchLocation)
             for node in touchedNodes {
                 if node.name == "tryAgainLabel" {
-                    restartGame(restartLevel: level) // Keep the current level if "Try Again!" is pressed
+                    // Retry current level - don't reset total score, just this level's score
+                    restartGame(restartLevel: level, resetTotalScore: false)
                 } else if node.name == "nextLevelLabel" {
-                    let nextLevel = (level % totalLevels) + 1
-                    restartGame(restartLevel: nextLevel) // Switch to the next level if "You Won!" is pressed
+                    // Advance to next level
+                    let nextLevel = level + 1
+                    restartGame(restartLevel: nextLevel, resetTotalScore: false)
+                } else if node.name == "gameCompleteLabel" {
+                    // Beat the game! Start fresh from level 1
+                    restartGame(restartLevel: 1, resetTotalScore: true)
                 }
             }
         }

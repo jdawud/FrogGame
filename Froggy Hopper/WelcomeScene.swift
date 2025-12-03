@@ -1,4 +1,5 @@
 import SpriteKit
+import GameKit
 import UIKit
 
 public class WelcomeScene: SKScene {
@@ -16,6 +17,11 @@ public class WelcomeScene: SKScene {
     private var layoutScale: CGFloat { isIPad ? 1.35 : 1.0 }
 
     public override func didMove(to view: SKView) {
+        print("🐸 WelcomeScene loaded!")
+        
+        // Ensure user interaction is enabled
+        isUserInteractionEnabled = true
+        
         // Start background music
         SoundManager.shared.playBackgroundMusic(filename: "BackgroundMusic10.mp3")
         
@@ -217,33 +223,43 @@ public class WelcomeScene: SKScene {
         let location = touch.location(in: self)
         let touchedNodes = nodes(at: location)
         
+        // Check for start button tap
         for node in touchedNodes {
             if node.name == "startButton" {
-                // Add button press effect
-                let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
-                let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
-                let sequence = SKAction.sequence([scaleDown, scaleUp])
-
-                node.run(sequence) { [weak self] in
+                animateButtonPress(node) { [weak self] in
                     self?.startGame()
                 }
                 return
-            } else if node.name == "leaderboardButton" {
-                let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
-                let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
-                let sequence = SKAction.sequence([scaleDown, scaleUp])
-
-                node.run(sequence) { [weak self] in
+            }
+        }
+        
+        // Check for leaderboard button tap (using frame check for SKShapeNode reliability)
+        if let leaderboardButton = childNode(withName: "leaderboardButton") as? SKShapeNode {
+            if leaderboardButton.frame.contains(location) {
+                animateButtonPress(leaderboardButton) { [weak self] in
                     self?.showLeaderboard()
                 }
                 return
             }
         }
     }
+    
+    /// Animates a button press with scale effect
+    private func animateButtonPress(_ node: SKNode, completion: @escaping () -> Void) {
+        let scaleDown = SKAction.scale(to: 0.9, duration: 0.1)
+        let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
+        let sequence = SKAction.sequence([scaleDown, scaleUp])
+        node.run(sequence, completion: completion)
+    }
 
+    /// Presents the Game Center leaderboard
     private func showLeaderboard() {
-        guard let viewController = view?.window?.rootViewController else { return }
-        GameCenterManager.shared.presentLeaderboard(from: viewController)
+        guard let viewController = self.view?.window?.rootViewController else {
+            print("❌ Could not get root view controller for leaderboard")
+            return
+        }
+        
+        GameCenterManager.shared.showLeaderboard(from: viewController)
     }
     
     private func startGame() {

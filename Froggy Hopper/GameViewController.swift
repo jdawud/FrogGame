@@ -13,8 +13,6 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        GameCenterManager.shared.authenticateLocalPlayer(presentingViewController: self)
         
         guard let skView = view as? SKView else { return }
         
@@ -25,6 +23,9 @@ class GameViewController: UIViewController {
         let welcomeScene = WelcomeScene(size: skView.bounds.size)
         welcomeScene.scaleMode = .aspectFill
         skView.presentScene(welcomeScene)
+        
+        // Authenticate with Game Center ONCE at app launch
+        GameCenterManager.shared.authenticate(from: self)
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
