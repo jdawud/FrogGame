@@ -29,7 +29,11 @@ class GameViewController: UIViewController {
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .landscape
+        // Portrait for iPhone, all orientations for iPad to allow Game Center/alerts to present
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return .all
+        }
+        return .portrait
     }
 
     override var prefersStatusBarHidden: Bool {

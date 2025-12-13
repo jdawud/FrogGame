@@ -11,7 +11,7 @@ import GameKit
 import UIKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    // Initialize the game elements
+    // MARK: - Game Elements
     var rock1Texture: SKTexture!
     var rock2Texture: SKTexture!
     var rock3Texture: SKTexture!
@@ -32,6 +32,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameTime: TimeInterval = 120.0
     var gameTimer: Timer?
     var timerLabel: SKLabelNode!
+    
+    /// Tracks whether the game is currently paused (for app lifecycle)
+    private var isPausedBySystem = false
     var isGameOver = false
     var backgroundMusicFiles: [String] = ["BackgroundMusic1.mp3", "BackgroundMusic2.mp3", "BackgroundMusic3.mp3", "BackgroundMusic4.mp3", "BackgroundMusic5.mp3", "BackgroundMusic6.mp3", "BackgroundMusic7.mp3", "BackgroundMusic8.mp3", "BackgroundMusic9.mp3", "BackgroundMusic10.mp3"]
     private var isIPad: Bool {
@@ -55,7 +58,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         // Set up physics world contact delegate
         physicsWorld.contactDelegate = self
+        
+        // Register for app lifecycle notifications to pause/resume timer
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAppWillResignActive),
+            name: UIApplication.willResignActiveNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAppDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+        
         loadLevel()
+    }
+    
+    deinit {
+        // Clean up notification observers
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: - App Lifecycle Handlers
+    
+    /// Called when app is about to become inactive (phone call, swipe away, etc.)
+    @objc private func handleAppWillResignActive() {
+        guard !isGameOver else { return }
+        print("⏸️ GameScene: Pausing game timer")
+        isPausedBySystem = true
+        gameTimer?.invalidate()
+    }
+    
+    /// Called when app becomes active again
+    @objc private func handleAppDidBecomeActive() {
+        guard !isGameOver, isPausedBySystem else { return }
+        print("▶️ GameScene: Resuming game timer")
+        isPausedBySystem = false
+        startGameTimer()
     }
 
     func loadLevel() {
@@ -569,8 +610,4 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scorePopup.run(SKAction.sequence([group, remove]))
     }
 
-    override func update(_ currentTime: TimeInterval) {
-        // Update game state
-        // You can add any necessary game state updates here
-    }
 }
