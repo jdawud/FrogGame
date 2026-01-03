@@ -76,12 +76,15 @@ struct SoundManagerTests {
         let manager = SoundManager()
         manager.playSoundEffect(named: "eat_sound.mp3")
         let first = try #require(manager.soundEffects["eat_sound.mp3"])
-        first.currentTime = 0.42
+        
+        // Calling playSoundEffect again stops the old player and creates a new one
         manager.playSoundEffect(named: "eat_sound.mp3")
-        #expect(first.isPlaying == false)
-        #expect(first.currentTime == 0)
+        #expect(first.isPlaying == false, "Old player should be stopped")
+        
+        // A new player should now be cached and playing
         let current = try #require(manager.soundEffects["eat_sound.mp3"])
-        #expect(current.isPlaying)
+        #expect(current !== first, "A new player should be created")
+        #expect(current.isPlaying, "New player should be playing")
     }
 
     @Test

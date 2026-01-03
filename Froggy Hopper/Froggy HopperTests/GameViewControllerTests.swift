@@ -19,10 +19,15 @@ struct GameViewControllerTests {
     }
 
     @Test
-    func supportedOrientationsAreLandscape() {
+    func supportedOrientationsArePortraitOnIPhone() {
         let vc = GameViewController()
         let mask = vc.supportedInterfaceOrientations
-        #expect(mask == .landscape)
+        // iPhone returns .portrait, iPad returns .all
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            #expect(mask == .all)
+        } else {
+            #expect(mask == .portrait)
+        }
     }
 
     @Test

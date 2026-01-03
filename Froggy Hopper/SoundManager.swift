@@ -5,6 +5,11 @@
 //  Created by junaid dawud on 6/11/23.
 //
 
+/// Singleton audio manager for background music and sound effects.
+///
+/// Uses AVAudioPlayer to loop background tracks and play one-shot sound effects.
+/// Caches sound effect players to avoid overlapping playback of the same sound.
+
 import Foundation
 import AVFoundation
 

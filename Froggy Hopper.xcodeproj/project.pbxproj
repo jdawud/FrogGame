@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		25D750250988464FB74767EA /* GameCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C9DCB14CDB4150A454AA78 /* GameCenterManager.swift */; };
+		58FD28982EFE8A0000637AA9 /* GameScene+Spawning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58FD28992EFE8A0000637AA9 /* GameScene+Spawning.swift */; };
 		585BFDE52EB90E2D00E63FE9 /* Froggy_HopperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BFDE22EB90E2D00E63FE9 /* Froggy_HopperTests.swift */; };
 		585BFDE62EB90E2D00E63FE9 /* GameSceneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BFDE32EB90E2D00E63FE9 /* GameSceneTests.swift */; };
 		585BFDE72EB90E2D00E63FE9 /* SoundManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BFDE42EB90E2D00E63FE9 /* SoundManagerTests.swift */; };
@@ -15,12 +16,8 @@
 		585BFDED2EB9165300E63FE9 /* GameViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585BFDEC2EB9165300E63FE9 /* GameViewControllerTests.swift */; };
 		588F4FFF2D69A39F006CA0F5 /* eat_sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 588F4FFE2D69A39F006CA0F5 /* eat_sound.mp3 */; };
 		588F50012D69B6B5006CA0F5 /* WelcomeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 588F50002D69B6B5006CA0F5 /* WelcomeScene.swift */; };
-		58EDAFDB2DE00E3400ABCC03 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 58EDAFDA2DE00E3400ABCC03 /* AsyncAlgorithms */; };
-		58EDAFDD2DE00EDE00ABCC03 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 58EDAFDC2DE00EDE00ABCC03 /* AsyncAlgorithms */; };
-		58FB10CF2DE00FA700B400A9 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 58FB10CE2DE00FA700B400A9 /* AsyncAlgorithms */; };
 		636008A929C60C2C00B83E75 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636008A829C60C2C00B83E75 /* AppDelegate.swift */; };
 		636008AB29C60C2C00B83E75 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 636008AA29C60C2C00B83E75 /* GameScene.sks */; };
-		636008AD29C60C2C00B83E75 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 636008AC29C60C2C00B83E75 /* Actions.sks */; };
 		636008AF29C60C2C00B83E75 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636008AE29C60C2C00B83E75 /* GameScene.swift */; };
 		636008B129C60C2C00B83E75 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636008B029C60C2C00B83E75 /* GameViewController.swift */; };
 		636008B429C60C2C00B83E75 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 636008B229C60C2C00B83E75 /* Main.storyboard */; };
@@ -52,11 +49,11 @@
 
 /* Begin PBXFileReference section */
 		19C9DCB14CDB4150A454AA78 /* GameCenterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterManager.swift; sourceTree = "<group>"; };
+		58FD28992EFE8A0000637AA9 /* GameScene+Spawning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameScene+Spawning.swift"; sourceTree = "<group>"; };
 		585BFDD22EB9094400E63FE9 /* Froggy HopperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Froggy HopperTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		585BFDE22EB90E2D00E63FE9 /* Froggy_HopperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Froggy_HopperTests.swift; sourceTree = "<group>"; };
 		585BFDE32EB90E2D00E63FE9 /* GameSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneTests.swift; sourceTree = "<group>"; };
 		585BFDE42EB90E2D00E63FE9 /* SoundManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManagerTests.swift; sourceTree = "<group>"; };
-		585BFDE82EB90E3C00E63FE9 /* Froggy HopperTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Froggy HopperTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		585BFDEA2EB9164600E63FE9 /* WelcomeSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSceneTests.swift; sourceTree = "<group>"; };
 		585BFDEC2EB9165300E63FE9 /* GameViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewControllerTests.swift; sourceTree = "<group>"; };
 		588F4FFE2D69A39F006CA0F5 /* eat_sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = eat_sound.mp3; sourceTree = "<group>"; };
@@ -65,7 +62,6 @@
 		636008A529C60C2C00B83E75 /* Froggy Hopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Froggy Hopper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		636008A829C60C2C00B83E75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		636008AA29C60C2C00B83E75 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
-		636008AC29C60C2C00B83E75 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		636008AE29C60C2C00B83E75 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		636008B029C60C2C00B83E75 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		636008B329C60C2C00B83E75 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -98,9 +94,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				58EDAFDB2DE00E3400ABCC03 /* AsyncAlgorithms in Frameworks */,
-				58EDAFDD2DE00EDE00ABCC03 /* AsyncAlgorithms in Frameworks */,
-				58FB10CF2DE00FA700B400A9 /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,7 +117,6 @@
 			children = (
 				636008A729C60C2C00B83E75 /* Froggy Hopper */,
 				636008A629C60C2C00B83E75 /* Products */,
-				585BFDE82EB90E3C00E63FE9 /* Froggy HopperTests-Bridging-Header.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -142,10 +134,10 @@
 			children = (
 				58FD28972EE0A95A00637AA9 /* Froggy Hopper.entitlements */,
 				636008AA29C60C2C00B83E75 /* GameScene.sks */,
-				636008AC29C60C2C00B83E75 /* Actions.sks */,
 				636008A829C60C2C00B83E75 /* AppDelegate.swift */,
 				63B2AAAC29C7A73400B58549 /* SceneDelegate.swift */,
 				636008AE29C60C2C00B83E75 /* GameScene.swift */,
+				58FD28992EFE8A0000637AA9 /* GameScene+Spawning.swift */,
 				588F50002D69B6B5006CA0F5 /* WelcomeScene.swift */,
 				636008B029C60C2C00B83E75 /* GameViewController.swift */,
 				6365BD912A36A2D00049C64F /* SoundManager.swift */,
@@ -240,7 +232,6 @@
 			);
 			mainGroup = 6360089C29C60C2B00B83E75;
 			packageReferences = (
-				58EDAFD92DE00E3400ABCC03 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
 			productRefGroup = 636008A629C60C2C00B83E75 /* Products */;
 			projectDirPath = "";
@@ -279,7 +270,6 @@
 				6365BD9D2A36C0010049C64F /* BackgroundMusic3.mp3 in Resources */,
 				588F4FFF2D69A39F006CA0F5 /* eat_sound.mp3 in Resources */,
 				6365BDA62A36C0160049C64F /* BackgroundMusic9.mp3 in Resources */,
-				636008AD29C60C2C00B83E75 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				636008AF29C60C2C00B83E75 /* GameScene.swift in Sources */,
+				58FD28982EFE8A0000637AA9 /* GameScene+Spawning.swift in Sources */,
 				636008B129C60C2C00B83E75 /* GameViewController.swift in Sources */,
 				636008A929C60C2C00B83E75 /* AppDelegate.swift in Sources */,
 				588F50012D69B6B5006CA0F5 /* WelcomeScene.swift in Sources */,
@@ -361,7 +352,6 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "Froggy HopperTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -388,7 +378,6 @@
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "Froggy HopperTests-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -633,35 +622,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		58EDAFD92DE00E3400ABCC03 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.4;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		58EDAFDA2DE00E3400ABCC03 /* AsyncAlgorithms */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 58EDAFD92DE00E3400ABCC03 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
-			productName = AsyncAlgorithms;
-		};
-		58EDAFDC2DE00EDE00ABCC03 /* AsyncAlgorithms */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 58EDAFD92DE00E3400ABCC03 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
-			productName = AsyncAlgorithms;
-		};
-		58FB10CE2DE00FA700B400A9 /* AsyncAlgorithms */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 58EDAFD92DE00E3400ABCC03 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
-			productName = AsyncAlgorithms;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6360089D29C60C2B00B83E75 /* Project object */;
 }

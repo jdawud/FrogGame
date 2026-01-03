@@ -1,3 +1,8 @@
+/// Animated title screen for Froggy Feed!
+///
+/// Displays the game logo, an animated frog on a lily pad, and Start/Leaderboard buttons.
+/// Spawns ambient fly sprites for visual polish. Entry point before gameplay begins.
+
 import SpriteKit
 import GameKit
 import UIKit

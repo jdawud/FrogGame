@@ -5,9 +5,23 @@
 //  Created by junaid dawud on 3/19/23.
 //
 
+/// Handles UIWindowScene lifecycle for the app.
+///
+/// Single source of truth for pause/resume behavior. Posts custom notifications
+/// that GameScene observes to pause/resume its timer.
+
 import Foundation
 import UIKit
 import SpriteKit
+
+// MARK: - Game Pause/Resume Notifications
+
+extension Notification.Name {
+    /// Posted when the game should pause (app becoming inactive)
+    static let gameShouldPause = Notification.Name("gameShouldPause")
+    /// Posted when the game should resume (app became active)
+    static let gameShouldResume = Notification.Name("gameShouldResume")
+}
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -37,7 +51,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         resumeGame()
     }
     
-    /// Pauses background music and game scene
+    /// Pauses background music, SKView, and notifies GameScene
     private func pauseGame() {
         // Pause background music
         SoundManager.shared.audioPlayer?.pause()
@@ -46,9 +60,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let skView = findSKView() {
             skView.isPaused = true
         }
+        
+        // Notify GameScene to pause its timer
+        NotificationCenter.default.post(name: .gameShouldPause, object: nil)
     }
     
-    /// Resumes background music and game scene
+    /// Resumes background music, SKView, and notifies GameScene
     private func resumeGame() {
         // Resume background music
         SoundManager.shared.audioPlayer?.play()
@@ -57,6 +74,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let skView = findSKView() {
             skView.isPaused = false
         }
+        
+        // Notify GameScene to resume its timer
+        NotificationCenter.default.post(name: .gameShouldResume, object: nil)
     }
     
     /// Finds the SKView from the view hierarchy

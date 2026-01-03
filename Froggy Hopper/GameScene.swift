@@ -5,8 +5,37 @@
 //  Created by junaid dawud on 3/18/23.
 //
 
+/// Core gameplay scene for Froggy Feed!
+///
+/// Manages the frog character, bug spawning, physics collisions, scoring, timer countdown,
+/// and level progression. Handles user touch input to hop the frog toward food items while
+/// avoiding obstacles. Reports scores and achievements to Game Center.
+
 import SpriteKit
-import GameplayKit
+
+// MARK: - Game Configuration
+
+/// Central configuration for gameplay constants.
+/// Adjust these values to tune game difficulty and behavior.
+enum GameConfig {
+    /// Time limit per level in seconds
+    static let levelDuration: TimeInterval = 120.0
+    
+    /// Points required to win a level
+    static let pointsToWin: Int = 100
+    
+    /// Maximum hop distance for the frog in points
+    static let maxHopDistance: CGFloat = 80.0
+    
+    /// Total number of levels in the game
+    static let totalLevels: Int = 10
+    
+    /// Points awarded for eating a fly or spider
+    static let flySpiderPoints: Int = 2
+    
+    /// Points awarded for eating an ant
+    static let antPoints: Int = 1
+}
 import GameKit
 import UIKit
 
@@ -28,8 +57,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = 0
     var totalScore = 0  // Cumulative score across all levels
     var level: Int = 1
-    var totalLevels: Int = 10
-    var gameTime: TimeInterval = 120.0
+    var totalLevels: Int = GameConfig.totalLevels
+    var gameTime: TimeInterval = GameConfig.levelDuration
     var gameTimer: Timer?
     var timerLabel: SKLabelNode!
     
@@ -59,17 +88,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Set up physics world contact delegate
         physicsWorld.contactDelegate = self
         
-        // Register for app lifecycle notifications to pause/resume timer
+        // Register for pause/resume notifications from SceneDelegate
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(handleAppWillResignActive),
-            name: UIApplication.willResignActiveNotification,
+            selector: #selector(handleGameShouldPause),
+            name: .gameShouldPause,
             object: nil
         )
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(handleAppDidBecomeActive),
-            name: UIApplication.didBecomeActiveNotification,
+            selector: #selector(handleGameShouldResume),
+            name: .gameShouldResume,
             object: nil
         )
         
@@ -77,22 +106,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     deinit {
-        // Clean up notification observers
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: - App Lifecycle Handlers
+    // MARK: - Pause/Resume Handlers
     
-    /// Called when app is about to become inactive (phone call, swipe away, etc.)
-    @objc private func handleAppWillResignActive() {
+    /// Called when SceneDelegate pauses the game
+    @objc private func handleGameShouldPause() {
         guard !isGameOver else { return }
         print("⏸️ GameScene: Pausing game timer")
         isPausedBySystem = true
         gameTimer?.invalidate()
     }
     
-    /// Called when app becomes active again
-    @objc private func handleAppDidBecomeActive() {
+    /// Called when SceneDelegate resumes the game
+    @objc private func handleGameShouldResume() {
         guard !isGameOver, isPausedBySystem else { return }
         print("▶️ GameScene: Resuming game timer")
         isPausedBySystem = false
@@ -234,7 +262,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         isGameOver = true
         gameTimer?.invalidate()
         
-        let wonLevel = score >= 100
+        let wonLevel = score >= GameConfig.pointsToWin
         
         // Add current level score to cumulative total
         totalScore += score
@@ -291,7 +319,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func restartGame(restartLevel: Int, resetTotalScore: Bool = false) {
         isGameOver = false
         score = 0
-        gameTime = 120.0
+        gameTime = GameConfig.levelDuration
         level = restartLevel
         
         // Reset total score if starting a completely new game
@@ -316,113 +344,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         GameCenterManager.shared.reportScore(totalScore)
     }
 
-    func spawnFood() {
-        // Spawn multiple food items at once
-        let foodTextures = [fly1Texture, fly2Texture, spider1Texture, spider2Texture, ant1Texture, ant2Texture]
-        
-        // Spawn 2-3 items at once
-        let spawnCount = Int.random(in: 2...3)
-        
-        for _ in 0..<spawnCount {
-            // Spawn a random food item at a random location
-            let randomIndex = Int.random(in: 0..<foodTextures.count)
-            let foodTexture = foodTextures[randomIndex]
-            let foodItem = SKSpriteNode(texture: foodTexture)
-            
-            // Set size based on food type
-            switch foodTexture {
-            case spider1Texture, spider2Texture:
-                foodItem.setScale(1.5)  // Make spiders 50% bigger
-            case ant1Texture, ant2Texture:
-                foodItem.setScale(1.3)  // Make ants 30% bigger
-            default:
-                break  // Keep flies at normal size
-            }
-            
-            // Ensure food spawns away from the frog
-            let minDistance: CGFloat = 100  // Minimum spawn distance from frog
-            var randomX: CGFloat
-            var randomY: CGFloat
-            var distanceFromFrog: CGFloat
-            
-            repeat {
-                randomX = CGFloat.random(in: 0..<size.width)
-                randomY = CGFloat.random(in: 0..<size.height)
-                let dx = randomX - frog.position.x
-                let dy = randomY - frog.position.y
-                distanceFromFrog = sqrt(dx * dx + dy * dy)
-            } while distanceFromFrog < minDistance
-            
-            foodItem.position = CGPoint(x: randomX, y: randomY)
-            foodItem.zPosition = 1
-            foodItem.name = "food"
-            
-            // Calculate physics body size (60% of visual size for better precision)
-            let foodPhysicsRadius = min(foodItem.size.width, foodItem.size.height) * 0.3
-            foodItem.physicsBody = SKPhysicsBody(circleOfRadius: foodPhysicsRadius)
-            foodItem.physicsBody?.isDynamic = true
-            foodItem.physicsBody?.affectedByGravity = false
-            foodItem.physicsBody?.categoryBitMask = PhysicsCategory.food
-            foodItem.physicsBody?.contactTestBitMask = PhysicsCategory.frog
-            foodItem.physicsBody?.collisionBitMask = PhysicsCategory.none
-            
-            addChild(foodItem)
-            foodItems.append(foodItem)
-
-            // Make the food item move
-            let randomDistance = CGFloat.random(in: 2...20)
-            let randomRotation = CGFloat.random(in: -50...50)
-            let randomAngle = CGFloat.random(in: 0...360) * CGFloat.pi / 180
-            let dx = randomDistance * cos(randomAngle)
-            let dy = randomDistance * sin(randomAngle)
-            let move = SKAction.moveBy(x: dx, y: dy, duration: 0.3)
-            let rotate = SKAction.rotate(byAngle: randomRotation * CGFloat.pi / 180, duration: 0.3)
-            let moveThenRotate = SKAction.sequence([move, rotate])
-            let moveThenRotateRepeat = SKAction.repeatForever(moveThenRotate)
-            foodItem.run(moveThenRotateRepeat)
-
-            // Remove the food item after 10 seconds
-            let removeAction = SKAction.removeFromParent()
-            let waitAction = SKAction.wait(forDuration: 10)
-            let removalSequence = SKAction.sequence([waitAction, removeAction])
-            foodItem.run(removalSequence)
-        }
-    }
-
-    func spawnObstacle() {
-        // Spawn a random rock obstacle at a random location
-        let obstacleTextures = [rock1Texture, rock2Texture, rock3Texture]
-        let randomIndex = Int.random(in: 0..<obstacleTextures.count)
-        let obstacleTexture = obstacleTextures[randomIndex]
-        let obstacle = SKSpriteNode(texture: obstacleTexture)
-        
-        // Ensure obstacles spawn away from the frog
-        let minDistance: CGFloat = 100  // Minimum spawn distance from frog
-        var randomX: CGFloat
-        var randomY: CGFloat
-        var distanceFromFrog: CGFloat
-        
-        repeat {
-            randomX = CGFloat.random(in: 0..<size.width)
-            randomY = CGFloat.random(in: 0..<size.height)
-            let dx = randomX - frog.position.x
-            let dy = randomY - frog.position.y
-            distanceFromFrog = sqrt(dx * dx + dy * dy)
-        } while distanceFromFrog < minDistance
-
-        obstacle.position = CGPoint(x: randomX, y: randomY)
-        obstacle.zPosition = 1
-        addChild(obstacle)
-        obstacles.append(obstacle)
-
-        // Set up circular physics body for rock
-        let obstacleRadius = min(obstacle.size.width, obstacle.size.height) * 0.25
-        obstacle.physicsBody = SKPhysicsBody(circleOfRadius: obstacleRadius)
-        obstacle.physicsBody?.isDynamic = false
-        obstacle.physicsBody?.affectedByGravity = false
-        obstacle.physicsBody?.categoryBitMask = PhysicsCategory.obstacle
-        obstacle.physicsBody?.collisionBitMask = PhysicsCategory.none
-    }
+    // MARK: - Spawning methods moved to GameScene+Spawning.swift
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !isGameOver {
@@ -442,7 +364,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
 
             // Set the hop distance and calculate the new position
-            let maxHopDistance: CGFloat = 80
+            let maxHopDistance: CGFloat = GameConfig.maxHopDistance
             var hopDistance: CGFloat = maxHopDistance
 
             // Use raycasting to detect obstacles in the path
@@ -563,13 +485,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         switch food.texture {
         case fly1Texture, fly2Texture:
             particleColor = .green
-            points = 2
+            points = GameConfig.flySpiderPoints
         case spider1Texture, spider2Texture:
             particleColor = .brown
-            points = 2
+            points = GameConfig.flySpiderPoints
         case ant1Texture, ant2Texture:
             particleColor = .red
-            points = 1
+            points = GameConfig.antPoints
         default:
             particleColor = .white
             points = 0
