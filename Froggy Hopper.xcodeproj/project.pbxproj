@@ -50,6 +50,15 @@
 /* Begin PBXFileReference section */
 		19C9DCB14CDB4150A454AA78 /* GameCenterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterManager.swift; sourceTree = "<group>"; };
 		58FD28992EFE8A0000637AA9 /* GameScene+Spawning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameScene+Spawning.swift"; sourceTree = "<group>"; };
+		58FD289A2F02D00000637AA9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		58FD289B2F02D00000637AA9 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		58FD289E2F02D00000637AA9 /* froggyfeed-architecture-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "froggyfeed-architecture-overview.md"; sourceTree = "<group>"; };
+		58FD289F2F02D00000637AA9 /* English [en] | iPad - 13" Display - 1 | 2025-12-13_15-03-26.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "English [en] | iPad - 13\" Display - 1 | 2025-12-13_15-03-26.jpeg"; sourceTree = "<group>"; };
+		58FD28A02F02D00000637AA9 /* English [en] | iPad - 13" Display - 2 | 2025-12-13_15-03-26.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "English [en] | iPad - 13\" Display - 2 | 2025-12-13_15-03-26.jpeg"; sourceTree = "<group>"; };
+		58FD28A12F02D00000637AA9 /* English [en] | iPad - 13" Display - 3 | 2025-12-13_15-03-26.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "English [en] | iPad - 13\" Display - 3 | 2025-12-13_15-03-26.jpeg"; sourceTree = "<group>"; };
+		58FD28A22F02D00000637AA9 /* English [en] | iPhone - 6.9" Display - 1 | 2025-12-13_15-03-26.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "English [en] | iPhone - 6.9\" Display - 1 | 2025-12-13_15-03-26.jpeg"; sourceTree = "<group>"; };
+		58FD28A32F02D00000637AA9 /* English [en] | iPhone - 6.9" Display - 2 | 2025-12-13_15-03-26.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "English [en] | iPhone - 6.9\" Display - 2 | 2025-12-13_15-03-26.jpeg"; sourceTree = "<group>"; };
+		58FD28A42F02D00000637AA9 /* English [en] | iPhone - 6.9" Display - 3 | 2025-12-13_15-03-26.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "English [en] | iPhone - 6.9\" Display - 3 | 2025-12-13_15-03-26.jpeg"; sourceTree = "<group>"; };
 		585BFDD22EB9094400E63FE9 /* Froggy HopperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Froggy HopperTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		585BFDE22EB90E2D00E63FE9 /* Froggy_HopperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Froggy_HopperTests.swift; sourceTree = "<group>"; };
 		585BFDE32EB90E2D00E63FE9 /* GameSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneTests.swift; sourceTree = "<group>"; };
@@ -112,9 +121,34 @@
 			path = "Froggy HopperTests";
 			sourceTree = "<group>";
 		};
+		58FD289C2F02D00000637AA9 /* Docs */ = {
+			isa = PBXGroup;
+			children = (
+				58FD289E2F02D00000637AA9 /* froggyfeed-architecture-overview.md */,
+			);
+			path = Docs;
+			sourceTree = "<group>";
+		};
+		58FD289D2F02D00000637AA9 /* Marketing */ = {
+			isa = PBXGroup;
+			children = (
+				58FD289F2F02D00000637AA9 /* English [en] | iPad - 13" Display - 1 | 2025-12-13_15-03-26.jpeg */,
+				58FD28A02F02D00000637AA9 /* English [en] | iPad - 13" Display - 2 | 2025-12-13_15-03-26.jpeg */,
+				58FD28A12F02D00000637AA9 /* English [en] | iPad - 13" Display - 3 | 2025-12-13_15-03-26.jpeg */,
+				58FD28A22F02D00000637AA9 /* English [en] | iPhone - 6.9" Display - 1 | 2025-12-13_15-03-26.jpeg */,
+				58FD28A32F02D00000637AA9 /* English [en] | iPhone - 6.9" Display - 2 | 2025-12-13_15-03-26.jpeg */,
+				58FD28A42F02D00000637AA9 /* English [en] | iPhone - 6.9" Display - 3 | 2025-12-13_15-03-26.jpeg */,
+			);
+			path = Marketing;
+			sourceTree = "<group>";
+		};
 		6360089C29C60C2B00B83E75 = {
 			isa = PBXGroup;
 			children = (
+				58FD289A2F02D00000637AA9 /* README.md */,
+				58FD289B2F02D00000637AA9 /* LICENSE */,
+				58FD289C2F02D00000637AA9 /* Docs */,
+				58FD289D2F02D00000637AA9 /* Marketing */,
 				636008A729C60C2C00B83E75 /* Froggy Hopper */,
 				636008A629C60C2C00B83E75 /* Products */,
 			);

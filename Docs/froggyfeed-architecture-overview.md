@@ -70,5 +70,3 @@ Swift Testing framework (`@Test` macro). 5 test files covering scenes, managers,
 - **Scoring**: `totalScore` accumulates across levels
 
 ---
-
-*Last updated: January 3, 2026*
